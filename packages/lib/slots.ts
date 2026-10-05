@@ -17,7 +17,7 @@ export type GetSlots = {
 };
 export type TimeFrame = { userIds?: number[]; startTime: number; endTime: number };
 
-const minimumOfOne = (input: number) => (input < 1 ? 1 : input);
+const minimumOfOne = (input: number) => Math.max(1, input);
 
 function buildSlotsWithDateRanges({
   dateRanges,
