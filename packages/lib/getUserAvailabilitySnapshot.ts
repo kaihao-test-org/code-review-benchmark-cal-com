@@ -37,7 +37,7 @@ import type { TimeRange } from "@calcom/types/schedule";
 import { getBusyTimes } from "./getBusyTimes";
 import { withReporting } from "./sentryWrapper";
 
-const log = logger.getSubLogger({ prefix: ["getUserAvailability"] });
+const log = logger.getSubLogger({ prefix: ["getUserAvailabilitySnapshot"] });
 const availabilitySchema = z
   .object({
     dateFrom: stringToDayjsZod,
@@ -304,7 +304,7 @@ const _getUserAvailability = async function getUsersWorkingHoursLifeTheUniverseA
   const user = initialData?.user || (await getUser(where));
 
   if (!user) {
-    throw new HttpError({ statusCode: 404, message: "No user found in getUserAvailability" });
+    throw new HttpError({ statusCode: 404, message: "No user found in getUserAvailabilitySnapshot" });
   }
 
   let eventType: EventType | null = initialData?.eventType || null;
@@ -608,7 +608,7 @@ const _getUserAvailability = async function getUsersWorkingHoursLifeTheUniverseA
   return result;
 };
 
-export const getUserAvailability = withReporting(_getUserAvailability, "getUserAvailability");
+export const getUserAvailabilitySnapshot = withReporting(_getUserAvailability, "getUserAvailabilitySnapshot");
 
 const _getPeriodStartDatesBetween = (
   dateFrom: Dayjs,

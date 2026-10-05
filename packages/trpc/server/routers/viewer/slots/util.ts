@@ -22,8 +22,8 @@ import type {
   GetAvailabilityUser,
   IFromUser,
   IToUser,
-} from "@calcom/lib/getUserAvailability";
-import { getPeriodStartDatesBetween, getUsersAvailability } from "@calcom/lib/getUserAvailability";
+} from "@calcom/lib/getUserAvailabilitySnapshot";
+import { getPeriodStartDatesBetween, getUsersAvailability } from "@calcom/lib/getUserAvailabilitySnapshot";
 import { descendingLimitKeys, intervalLimitKeyToUnit } from "@calcom/lib/intervalLimits/intervalLimit";
 import type { IntervalLimit } from "@calcom/lib/intervalLimits/intervalLimitSchema";
 import { parseBookingLimit } from "@calcom/lib/intervalLimits/isBookingLimits";

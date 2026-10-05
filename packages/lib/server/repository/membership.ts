@@ -282,7 +282,7 @@ export class MembershipRepository {
           select: {
             credentials: {
               select: credentialForCalendarServiceSelect,
-            }, // needed for getUserAvailability
+            }, // needed for getUserAvailabilitySnapshot
             ...availabilityUserSelect,
           },
         },
