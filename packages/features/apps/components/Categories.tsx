@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { Icon } from "@calcom/ui/components/icon";
 import { SkeletonText } from "@calcom/ui/components/skeleton";
 
@@ -15,7 +15,7 @@ export function AppStoreCategories({
     count: number;
   }[];
 }) {
-  const { t, isLocaleReady } = useLocale();
+  const { t, isLocaleReady } = useCalendarLocale();
   return (
     <div>
       <Slider

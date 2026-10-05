@@ -71,3 +71,5 @@ export const useLocale = (): useLocaleReturnType => {
     i18n: clientI18n.i18n,
   };
 };
+
+export const useCalendarLocale = useLocale;

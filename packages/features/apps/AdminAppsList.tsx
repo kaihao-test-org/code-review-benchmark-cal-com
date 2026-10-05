@@ -13,7 +13,7 @@ import { appKeysSchemas } from "@calcom/app-store/apps.keys-schemas.generated";
 import AppListCard from "@calcom/features/apps/components/AppListCard";
 import { Dialog } from "@calcom/features/components/controlled-dialog";
 import { useCompatSearchParams } from "@calcom/lib/hooks/useCompatSearchParams";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { AppCategories } from "@calcom/prisma/enums";
 import type { RouterOutputs } from "@calcom/trpc/react";
 import { trpc } from "@calcom/trpc/react";
@@ -45,7 +45,7 @@ const IntegrationContainer = ({
   category: string;
   handleModelOpen: (data: EditModalState) => void;
 }) => {
-  const { t } = useLocale();
+  const { t } = useCalendarLocale();
   const utils = trpc.useUtils();
   const [disableDialog, setDisableDialog] = useState(false);
 
@@ -154,7 +154,7 @@ const AdminAppsList = ({
   onSubmit?: () => void;
   nav?: { onNext: () => void; onPrev: () => void };
 } & Omit<JSX.IntrinsicElements["form"], "onSubmit">) => {
-  const { t } = useLocale();
+  const { t } = useCalendarLocale();
   return (
     <form
       {...rest}
@@ -201,7 +201,7 @@ const EditKeysModal: FC<{
   appName?: string;
 }> = (props) => {
   const utils = trpc.useUtils();
-  const { t } = useLocale();
+  const { t } = useCalendarLocale();
   const { dirName, slug, type, isOpen, keys, handleModelClose, fromEnabled, appName } = props;
   const appKeySchema = appKeysSchemas[dirName as keyof typeof appKeysSchemas];
 
@@ -280,7 +280,7 @@ interface EditModalState extends Pick<App, "keys"> {
 
 const AdminAppsListContainer = () => {
   const searchParams = useCompatSearchParams();
-  const { t } = useLocale();
+  const { t } = useCalendarLocale();
   const category = searchParams?.get("category") || AppCategories.calendar;
 
   const { data: apps, isPending } = trpc.viewer.apps.listLocal.useQuery(

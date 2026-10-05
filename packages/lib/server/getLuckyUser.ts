@@ -3,7 +3,7 @@ import type { Prisma, User } from "@prisma/client";
 import type { FormResponse, Fields } from "@calcom/app-store/routing-forms/types/types";
 import { zodRoutes } from "@calcom/app-store/routing-forms/zod";
 import dayjs from "@calcom/dayjs";
-import { getBusyCalendarTimes } from "@calcom/lib/CalendarManager";
+import { readBusyCalendarTimes } from "@calcom/lib/CalendarManager";
 import logger from "@calcom/lib/logger";
 import { acrossQueryValueCompatiblity } from "@calcom/lib/raqb/raqbUtils";
 import { raqbQueryValueSchema } from "@calcom/lib/raqb/zod";
@@ -458,7 +458,7 @@ async function getCalendarBusyTimesOfInterval(
 ): Promise<{ userId: number; busyTimes: (EventBusyDate & { timeZone?: string })[] }[]> {
   return Promise.all(
     usersWithCredentials.map((user) =>
-      getBusyCalendarTimes(
+      readBusyCalendarTimes(
         user.credentials,
         getIntervalStartDate({ interval, rrTimestampBasis, meetingStartTime }).toISOString(),
         getIntervalEndDate({ interval, rrTimestampBasis, meetingStartTime }).toISOString(),
