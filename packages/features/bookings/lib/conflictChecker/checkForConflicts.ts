@@ -1,6 +1,7 @@
 import type { Dayjs } from "dayjs";
 
 import dayjs from "@calcom/dayjs";
+import { isWithinBookingWindow } from "@calcom/lib/bookingWindowBoundary";
 import type { CurrentSeats } from "@calcom/lib/getUserAvailability";
 import type { BufferedBusyTime } from "@calcom/types/BufferedBusyTime";
 
@@ -37,13 +38,12 @@ export function checkForConflicts({
     .sort((a, b) => a.start - b.start);
 
   for (const busyTime of sortedBusyTimes) {
-    if (busyTime.start >= slotEnd) {
-      break;
+    if (
+      isWithinBookingWindow(busyTime.start, slotEnd) &&
+      isWithinBookingWindow(slotStart, busyTime.end)
+    ) {
+      return true;
     }
-    if (busyTime.end <= slotStart) {
-      continue;
-    }
-    return true;
   }
 
   return false;
