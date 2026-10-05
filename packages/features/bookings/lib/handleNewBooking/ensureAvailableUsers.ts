@@ -6,7 +6,7 @@ import { checkForConflicts } from "@calcom/features/bookings/lib/conflictChecker
 import { buildDateRanges } from "@calcom/lib/date-ranges";
 import { ErrorCode } from "@calcom/lib/errorCodes";
 import { getBusyTimesForLimitChecks } from "@calcom/lib/getBusyTimes";
-import { getUsersAvailability } from "@calcom/lib/getUserAvailability";
+import { getUsersAvailability } from "@calcom/lib/getUserAvailabilitySnapshot";
 import { parseBookingLimit } from "@calcom/lib/intervalLimits/isBookingLimits";
 import { parseDurationLimit } from "@calcom/lib/intervalLimits/isDurationLimits";
 import { getPiiFreeUser } from "@calcom/lib/piiFreeData";
