@@ -1,3 +1,4 @@
+import { mayAddBookingGuests } from "@calcom/lib/guestBookingAccess";
 import dayjs from "@calcom/dayjs";
 import { sendAddGuestsEmails } from "@calcom/emails";
 import EventManager from "@calcom/lib/EventManager";
@@ -43,15 +44,14 @@ export const addGuestsHandler = async ({ ctx, input }: AddGuestsOptions) => {
 
   if (!booking) throw new TRPCError({ code: "NOT_FOUND", message: "booking_not_found" });
 
-  const isTeamAdminOrOwner =
-    (await isTeamAdmin(user.id, booking.eventType?.teamId ?? 0)) ||
-    (await isTeamOwner(user.id, booking.eventType?.teamId ?? 0));
+  const teamAdmin = !!(await isTeamAdmin(user.id, booking.eventType?.teamId ?? 0));
+  const teamOwner = await isTeamOwner(user.id, booking.eventType?.teamId ?? 0);
 
   const isOrganizer = booking.userId === user.id;
 
   const isAttendee = !!booking.attendees.find((attendee) => attendee.email === user.email);
 
-  if (!isTeamAdminOrOwner && !isOrganizer && !isAttendee) {
+  if (!mayAddBookingGuests({ teamAdmin, teamOwner, organizer: isOrganizer, attendee: isAttendee })) {
     throw new TRPCError({ code: "FORBIDDEN", message: "you_do_not_have_permission" });
   }
 
