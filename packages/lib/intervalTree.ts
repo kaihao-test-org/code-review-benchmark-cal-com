@@ -79,7 +79,7 @@ export class ContainmentSearchAlgorithm<T> {
       return;
     }
 
-    if (node.start <= targetStart && node.end >= targetEnd && node.index !== targetIndex) {
+    if (node.start <= targetStart && node.end >= targetEnd) {
       result.push(node);
     }
 
