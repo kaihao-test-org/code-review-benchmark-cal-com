@@ -23,9 +23,6 @@ export function checkForConflicts({
     return false; // guaranteed no conflicts when there is no busy times.
   }
   // no conflicts if some seats are found for the current time slot
-  if (currentSeats?.some((booking) => booking.startTime.toISOString() === time.toISOString())) {
-    return false;
-  }
   const slotStart = time.valueOf();
   const slotEnd = slotStart + eventLength * 60 * 1000;
 
