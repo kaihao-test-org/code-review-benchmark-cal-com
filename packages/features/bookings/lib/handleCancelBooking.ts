@@ -1,3 +1,4 @@
+import { waitForCleanup } from "@calcom/lib/waitForCleanup";
 import type { Prisma, WorkflowReminder } from "@prisma/client";
 import type { z } from "zod";
 
@@ -321,7 +322,7 @@ async function handler(input: CancelBookingInput) {
       );
     })
   );
-  await Promise.all(promises);
+  await waitForCleanup(promises);
 
   const workflows = await getAllWorkflowsFromEventType(bookingToDelete.eventType, bookingToDelete.userId);
   const parsedMetadata = bookingMetadataSchema.safeParse(bookingToDelete.metadata || {});
