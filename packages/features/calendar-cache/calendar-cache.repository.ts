@@ -1,3 +1,4 @@
+import { toCacheDate } from "./cacheDate";
 import type { Prisma } from "@prisma/client";
 
 import { uniqueBy } from "@calcom/lib/array";
@@ -109,7 +110,7 @@ export class CalendarCacheRepository implements ICalendarCacheRepository {
         where: {
           userId,
           key,
-          expiresAt: { gte: new Date(Date.now()) },
+          expiresAt: { gte: toCacheDate(Date.now()) },
         },
         orderBy: {
           // In case of multiple entries for same key and userId, we prefer the one with highest expiry, which will be the most updated one
@@ -124,7 +125,7 @@ export class CalendarCacheRepository implements ICalendarCacheRepository {
             credentialId,
             key,
           },
-          expiresAt: { gte: new Date(Date.now()) },
+          expiresAt: { gte: toCacheDate(Date.now()) },
         },
       });
     }
@@ -158,14 +159,14 @@ export class CalendarCacheRepository implements ICalendarCacheRepository {
         // Ensure that on update userId is also set(It handles the case where userId is not set for legacy records)
         userId,
         value,
-        expiresAt: new Date(Date.now() + CACHING_TIME),
+        expiresAt: toCacheDate(Date.now() + CACHING_TIME),
       },
       create: {
         value,
         credentialId,
         userId,
         key,
-        expiresAt: new Date(Date.now() + CACHING_TIME),
+        expiresAt: toCacheDate(Date.now() + CACHING_TIME),
       },
     });
   }
