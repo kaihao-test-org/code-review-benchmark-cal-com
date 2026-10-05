@@ -11,7 +11,7 @@ type UserOptions = {
 };
 
 export const userHandler = async ({ input }: UserOptions) => {
-  return getUserAvailabilitySnapshot(
+  return getUserAvailability(
     { returnDateOverrides: true, bypassBusyCalendarTimes: false, ...input },
     undefined
   );
