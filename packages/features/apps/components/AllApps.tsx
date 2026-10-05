@@ -5,7 +5,7 @@ import type { AppCategories } from "@prisma/client";
 import type { UIEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import type { UserAdminTeams } from "@calcom/lib/server/repository/user";
 import type { AppFrontendPayload as App } from "@calcom/types/App";
 import type { CredentialFrontendPayload as Credential } from "@calcom/types/Credential";
@@ -61,7 +61,7 @@ interface CategoryTabProps {
 }
 
 function CategoryTab({ selectedCategory, categories, searchText, onCategoryChange }: CategoryTabProps) {
-  const { t } = useLocale();
+  const { t } = useCalendarLocale();
   const { ref, calculateScroll, leftVisible, rightVisible } = useShouldShowArrows();
 
   const handleLeft = () => {
@@ -140,7 +140,7 @@ function CategoryTab({ selectedCategory, categories, searchText, onCategoryChang
 }
 
 export function AllApps({ apps, searchText, categories, userAdminTeams }: AllAppsPropsType) {
-  const { t } = useLocale();
+  const { t } = useCalendarLocale();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [appsContainerRef, enableAnimation] = useAutoAnimate<HTMLDivElement>();
 

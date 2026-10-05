@@ -7,7 +7,7 @@ import "@glidejs/glide/dist/css/glide.theme.min.css";
 import type { ComponentProps, FC } from "react";
 import { useEffect, useRef } from "react";
 
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { Icon } from "@calcom/ui/components/icon";
 import { SkeletonText } from "@calcom/ui/components/skeleton";
 
@@ -37,7 +37,7 @@ export const Slider = <T extends string | unknown>({
 }) => {
   const glide = useRef(null);
   const slider = useRef<Glide.Properties | null>(null);
-  const { isLocaleReady } = useLocale();
+  const { isLocaleReady } = useCalendarLocale();
   useEffect(() => {
     if (glide.current) {
       slider.current = new Glide(glide.current, {

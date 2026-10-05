@@ -4,7 +4,7 @@ import React from "react";
 import { useEventTypeById } from "@calcom/atoms/hooks/event-types/private/useEventTypeById";
 import { useIsPlatform } from "@calcom/atoms/hooks/useIsPlatform";
 import { Dialog } from "@calcom/features/components/controlled-dialog";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { Badge } from "@calcom/ui/components/badge";
 import { DialogContent } from "@calcom/ui/components/dialog";
 
@@ -43,7 +43,7 @@ export const BookEventFormWrapperComponent = ({
   child: ReactNode;
   eventLength?: number;
 }) => {
-  const { i18n, t } = useLocale();
+  const { i18n, t } = useCalendarLocale();
   const selectedTimeslot = useBookerStore((state) => state.selectedTimeslot);
   const selectedDuration = useBookerStore((state) => state.selectedDuration);
   const { timeFormat, timezone } = useBookerTime();

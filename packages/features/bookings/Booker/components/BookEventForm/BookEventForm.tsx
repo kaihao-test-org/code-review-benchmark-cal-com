@@ -9,7 +9,7 @@ import ServerTrans from "@calcom/lib/components/ServerTrans";
 import { WEBSITE_PRIVACY_POLICY_URL, WEBSITE_TERMS_URL } from "@calcom/lib/constants";
 import { ErrorCode } from "@calcom/lib/errorCodes";
 import { getPaymentAppData } from "@calcom/lib/getPaymentAppData";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import type { TimeFormat } from "@calcom/lib/timeFormat";
 import { Alert } from "@calcom/ui/components/alert";
 import { Button } from "@calcom/ui/components/button";
@@ -80,7 +80,7 @@ export const BookEventForm = ({
   const { timeFormat, timezone } = useBookerTime();
 
   const [responseVercelIdHeader] = useState<string | null>(null);
-  const { t, i18n } = useLocale();
+  const { t, i18n } = useCalendarLocale();
 
   const isPaidEvent = useMemo(() => {
     if (!eventType?.price) return false;

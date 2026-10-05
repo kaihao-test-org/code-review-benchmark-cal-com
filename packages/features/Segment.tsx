@@ -10,7 +10,7 @@ import {
   ConfigFor,
 } from "@calcom/app-store/routing-forms/components/react-awesome-query-builder/config/uiConfig";
 import { getQueryBuilderConfigForAttributes } from "@calcom/app-store/routing-forms/lib/getQueryBuilderConfig";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { isEqual } from "@calcom/lib/isEqual";
 import { buildStateFromQueryValue } from "@calcom/lib/raqb/raqbUtils";
 import type { AttributesQueryValue } from "@calcom/lib/raqb/types";
@@ -104,7 +104,7 @@ function MatchingTeamMembers({
   teamId: number;
   queryValue: AttributesQueryValue | null;
 }) {
-  const { t } = useLocale();
+  const { t } = useCalendarLocale();
 
   // Check if queryValue has valid children properties value
   const hasValidValue = queryValue?.children1
@@ -190,7 +190,7 @@ export function Segment({
   className?: string;
 }) {
   const { attributes, isPending } = useAttributes(teamId);
-  const { t } = useLocale();
+  const { t } = useCalendarLocale();
   if (isPending) return <span>Loading...</span>;
   if (!attributes) {
     console.log("Error fetching attributes");

@@ -37,7 +37,7 @@ import type { TimeRange } from "@calcom/types/schedule";
 import { getBusyTimes } from "./getBusyTimes";
 import { withReporting } from "./sentryWrapper";
 
-const log = logger.getSubLogger({ prefix: ["getUserAvailability"] });
+const log = logger.getSubLogger({ prefix: ["getAvailabilitySnapshot"] });
 const availabilitySchema = z
   .object({
     dateFrom: stringToDayjsZod,
@@ -608,7 +608,7 @@ const _getUserAvailability = async function getUsersWorkingHoursLifeTheUniverseA
   return result;
 };
 
-export const getUserAvailability = withReporting(_getUserAvailability, "getUserAvailability");
+export const getAvailabilitySnapshot = withReporting(_getUserAvailability, "getAvailabilitySnapshot");
 
 const _getPeriodStartDatesBetween = (
   dateFrom: Dayjs,
@@ -738,3 +738,5 @@ const _getUsersAvailability = async ({ users, query, initialData }: GetUsersAvai
 };
 
 export const getUsersAvailability = withReporting(_getUsersAvailability, "getUsersAvailability");
+
+export const getUserAvailability = getAvailabilitySnapshot;
