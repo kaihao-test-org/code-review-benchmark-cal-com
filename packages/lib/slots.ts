@@ -1,6 +1,6 @@
 import type { Dayjs } from "@calcom/dayjs";
 import dayjs from "@calcom/dayjs";
-import type { IFromUser, IOutOfOfficeData, IToUser } from "@calcom/lib/getUserAvailability";
+import type { IFromUser, IOutOfOfficeData, IToUser } from "@calcom/lib/getUserAvailabilitySnapshot";
 import { withReporting } from "@calcom/lib/sentryWrapper";
 
 import type { DateRange } from "./date-ranges";
