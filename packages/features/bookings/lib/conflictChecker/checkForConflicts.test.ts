@@ -25,6 +25,7 @@ describe("checkForConflicts", () => {
 
       const result = checkForConflicts({
         ...createTestData("2023-01-01T09:00:00Z"),
+        busy: [{ start: dayjs.utc("2023-01-01T09:00:00Z").toDate(), end: dayjs.utc("2023-01-01T09:30:00Z").toDate() }],
         currentSeats,
       });
 
