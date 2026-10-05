@@ -1,3 +1,4 @@
+import { reminderCancellationData } from "./reminderCancellation";
 import type { EventStatus } from "ics";
 import { v4 as uuidv4 } from "uuid";
 
@@ -442,9 +443,7 @@ export const deleteScheduledEmailReminder = async (reminderId: number) => {
       where: {
         id: reminderId,
       },
-      data: {
-        cancelled: true,
-      },
+      data: reminderCancellationData(),
     });
   } catch (error) {
     log.error(`Error canceling reminder with error ${error}`);
