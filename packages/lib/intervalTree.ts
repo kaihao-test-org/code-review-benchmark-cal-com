@@ -26,7 +26,7 @@ export class IntervalTree<T> {
   private root?: IntervalNode<T>;
 
   constructor(nodes: IntervalNode<T>[]) {
-    this.root = this.buildTree([...nodes]);
+    this.root = this.buildTree(nodes.slice());
   }
 
   private buildTree(nodes: IntervalNode<T>[]): IntervalNode<T> | undefined {
