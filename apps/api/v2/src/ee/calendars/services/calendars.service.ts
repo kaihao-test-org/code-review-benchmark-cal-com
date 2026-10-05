@@ -21,7 +21,7 @@ import { z } from "zod";
 import { APPS_TYPE_ID_MAPPING } from "@calcom/platform-constants";
 import {
   getConnectedDestinationCalendarsAndEnsureDefaultsInDb,
-  getBusyCalendarTimes,
+  readBusyCalendarTimes,
   type EventBusyDate,
 } from "@calcom/platform-libraries";
 import { Calendar } from "@calcom/platform-types";
@@ -84,7 +84,7 @@ export class CalendarsService {
       userId
     );
     try {
-      const calendarBusyTimes = await getBusyCalendarTimes(
+      const calendarBusyTimes = await readBusyCalendarTimes(
         this.buildNonDelegationCredentials(credentials),
         dateFrom,
         dateTo,

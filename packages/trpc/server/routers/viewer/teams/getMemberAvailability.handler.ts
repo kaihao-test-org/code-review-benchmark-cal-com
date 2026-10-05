@@ -1,5 +1,5 @@
 import { enrichUserWithDelegationCredentialsIncludeServiceAccountKey } from "@calcom/lib/delegationCredential/server";
-import { getUserAvailability } from "@calcom/lib/getUserAvailability";
+import { getAvailabilitySnapshot } from "@calcom/lib/getUserAvailability";
 import { isTeamMember } from "@calcom/lib/server/queries/teams";
 import { MembershipRepository } from "@calcom/lib/server/repository/membership";
 import type { TrpcSessionUser } from "@calcom/trpc/server/types";
@@ -32,7 +32,7 @@ export const getMemberAvailabilityHandler = async ({ ctx, input }: GetMemberAvai
   });
 
   // get availability for this member
-  return await getUserAvailability(
+  return await getAvailabilitySnapshot(
     {
       username: username,
       dateFrom: input.dateFrom,
