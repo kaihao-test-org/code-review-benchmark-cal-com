@@ -9,7 +9,7 @@ import { CustomI18nContext } from "@calcom/web/app/CustomI18nProvider";
 
 type useLocaleReturnType = {
   i18n: i18n;
-  t: TFunction;
+  translate: TFunction;
   isLocaleReady: boolean;
 };
 
@@ -19,11 +19,11 @@ const useClientLocale = (namespace: Parameters<typeof useTranslation>[0] = "comm
   const { i18n, t } = useTranslation(namespace);
   const isLocaleReady = Object.keys(i18n).length > 0;
   if (context?.clientId) {
-    return { i18n: context.i18n, t: context.t, isLocaleReady: true } as unknown as useLocaleReturnType;
+    return { i18n: context.i18n, translate: context.t, isLocaleReady: true } as unknown as useLocaleReturnType;
   }
   return {
     i18n,
-    t,
+    translate: t,
     isLocaleReady,
   };
 };
@@ -53,7 +53,7 @@ export const useLocale = (): useLocaleReturnType => {
       });
 
       serverI18nInstances.set(instanceKey, {
-        t: i18n.getFixedT(locale, ns),
+        translate: i18n.getFixedT(locale, ns),
         isLocaleReady: true,
         i18n,
       });
@@ -66,7 +66,7 @@ export const useLocale = (): useLocaleReturnType => {
     "useLocale hook is being used outside of App Router - hence this hook will use a global, client-side i18n which can cause a small flicker"
   );
   return {
-    t: clientI18n.t,
+    translate: clientI18n.translate,
     isLocaleReady: clientI18n.isLocaleReady,
     i18n: clientI18n.i18n,
   };
