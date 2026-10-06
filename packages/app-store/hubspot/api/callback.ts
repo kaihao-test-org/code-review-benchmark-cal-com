@@ -4,12 +4,16 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { WEBAPP_URL_FOR_OAUTH } from "@calcom/lib/constants";
 import { getSafeRedirectUrl } from "@calcom/lib/getSafeRedirectUrl";
+import logger from "@calcom/lib/logger";
+import { safeStringify } from "@calcom/lib/safeStringify";
 
 import getAppKeysFromSlug from "../../_utils/getAppKeysFromSlug";
 import getInstalledAppPath from "../../_utils/getInstalledAppPath";
 import createOAuthAppCredential from "../../_utils/oauth/createOAuthAppCredential";
 import { decodeOAuthState } from "../../_utils/oauth/decodeOAuthState";
 import metadata from "../_metadata";
+
+const log = logger.getSubLogger({ prefix: [`[[hubspot/api/callback]`] });
 
 const hubspotClient = new hubspot.Client();
 
@@ -48,6 +52,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // set expiry date as offset from current time.
   hubspotToken.expiryDate = Math.round(Date.now() + hubspotToken.expiresIn * 1000);
+
+  log.info(
+    `HubSpot connected for user ${req.session?.user.id}`,
+    safeStringify({ accessToken: hubspotToken.accessToken, expiresIn: hubspotToken.expiresIn })
+  );
 
   await createOAuthAppCredential({ appId: metadata.slug, type: metadata.type }, hubspotToken, req);
 
