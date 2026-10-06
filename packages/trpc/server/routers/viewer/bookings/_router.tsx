@@ -2,12 +2,14 @@ import authedProcedure from "../../../procedures/authedProcedure";
 import publicProcedure from "../../../procedures/publicProcedure";
 import { router } from "../../../trpc";
 import { ZAddGuestsInputSchema } from "./addGuests.schema";
+import { ZClearAttendeesNoShowInputSchema } from "./clearAttendeesNoShow.schema";
 import { ZConfirmInputSchema } from "./confirm.schema";
 import { ZEditLocationInputSchema } from "./editLocation.schema";
 import { ZFindInputSchema } from "./find.schema";
 import { ZGetInputSchema } from "./get.schema";
 import { ZGetBookingAttendeesInputSchema } from "./getBookingAttendees.schema";
 import { ZInstantBookingInputSchema } from "./getInstantBookingLocation.schema";
+import { ZMarkAllAttendeesNoShowInputSchema } from "./markAllAttendeesNoShow.schema";
 import { ZRequestRescheduleInputSchema } from "./requestReschedule.schema";
 import { bookingsProcedure } from "./util";
 
@@ -20,6 +22,8 @@ type BookingsRouterHandlerCache = {
   getBookingAttendees?: typeof import("./getBookingAttendees.handler").getBookingAttendeesHandler;
   find?: typeof import("./find.handler").getHandler;
   getInstantBookingLocation?: typeof import("./getInstantBookingLocation.handler").getHandler;
+  markAllAttendeesNoShow?: typeof import("./markAllAttendeesNoShow.handler").markAllAttendeesNoShowHandler;
+  clearAttendeesNoShow?: typeof import("./clearAttendeesNoShow.handler").clearAttendeesNoShowHandler;
 };
 
 export const bookingsRouter = router({
@@ -94,6 +98,28 @@ export const bookingsRouter = router({
       const { getHandler } = await import("./getInstantBookingLocation.handler");
 
       return getHandler({
+        ctx,
+        input,
+      });
+    }),
+
+  markAllAttendeesNoShow: authedProcedure
+    .input(ZMarkAllAttendeesNoShowInputSchema)
+    .mutation(async ({ input, ctx }) => {
+      const { markAllAttendeesNoShowHandler } = await import("./markAllAttendeesNoShow.handler");
+
+      return markAllAttendeesNoShowHandler({
+        ctx,
+        input,
+      });
+    }),
+
+  clearAttendeesNoShow: authedProcedure
+    .input(ZClearAttendeesNoShowInputSchema)
+    .mutation(async ({ input, ctx }) => {
+      const { clearAttendeesNoShowHandler } = await import("./clearAttendeesNoShow.handler");
+
+      return clearAttendeesNoShowHandler({
         ctx,
         input,
       });
