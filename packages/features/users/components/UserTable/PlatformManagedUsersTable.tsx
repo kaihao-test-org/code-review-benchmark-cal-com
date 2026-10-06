@@ -12,7 +12,7 @@ import {
   DataTableFilters,
   DataTableSegment,
   useColumnFilters,
-  useDataTable,
+  useTableState,
 } from "@calcom/features/data-table";
 import { useSegments } from "@calcom/features/data-table/hooks/useSegments";
 import { getUserAvatarUrl } from "@calcom/lib/getAvatarUrl";
@@ -76,7 +76,7 @@ function UserListTableContent({ oAuthClientId }: PlatformManagedUsersTableProps)
 
   const columnFilters = useColumnFilters();
 
-  const { pageIndex, pageSize, searchTerm } = useDataTable();
+  const { pageIndex, pageSize, searchTerm } = useTableState().state;
   const limit = pageSize;
   const offset = pageIndex * pageSize;
 

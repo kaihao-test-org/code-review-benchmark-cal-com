@@ -16,7 +16,7 @@ import {
   DataTableToolbar,
   DataTableProvider,
   ColumnFilterType,
-  useDataTable,
+  useTableState,
   useFilterValue,
   ZDateRangeFilterValue,
   DataTableFilters,
@@ -82,7 +82,7 @@ function OutOfOfficeEntriesListContent() {
     setOpenModal(true);
   };
 
-  const { searchTerm } = useDataTable();
+  const { searchTerm } = useTableState().state;
   const searchParams = useCompatSearchParams();
   const selectedTab = searchParams?.get("type") ?? OutOfOfficeTab.MINE;
 

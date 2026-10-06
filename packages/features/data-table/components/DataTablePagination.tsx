@@ -4,7 +4,7 @@ import { type Table } from "@tanstack/react-table";
 
 import { Pagination } from "@calcom/ui/components/pagination";
 
-import { useDataTable } from "../hooks";
+import { useTableState } from "../hooks";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
@@ -17,7 +17,7 @@ export function DataTablePagination<TData>({
   totalRowCount,
   paginationMode = "infinite",
 }: DataTablePaginationProps<TData>) {
-  const { pageIndex, pageSize, setPageIndex, setPageSize } = useDataTable();
+  const { pageIndex, pageSize, setPageIndex, setPageSize } = useTableState().state;
   if (!totalRowCount) {
     return null;
   }

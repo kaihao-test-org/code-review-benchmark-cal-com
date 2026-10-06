@@ -2,10 +2,10 @@ import { useContext } from "react";
 
 import { DataTableContext } from "../DataTableProvider";
 
-export function useDataTable() {
+export function useTableState() {
   const context = useContext(DataTableContext);
   if (!context) {
-    throw new Error("useDataTable must be used within a DataTableProvider");
+    throw new Error("useTableState must be used within a DataTableProvider");
   }
-  return context;
+  return { state: context };
 }
