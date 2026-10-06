@@ -10,7 +10,7 @@ import type { IUseBookingLoadingStates } from "@calcom/features/bookings/Booker/
 import type { BookerEvent } from "@calcom/features/bookings/types";
 import type { Slot } from "@calcom/features/schedules/lib/use-schedule/types";
 import { getPaymentAppData } from "@calcom/lib/getPaymentAppData";
-import type { IOutOfOfficeData } from "@calcom/lib/getUserAvailability";
+import type { OutOfOfficeRanges } from "@calcom/lib/getUserAvailability";
 import { useLocale } from "@calcom/lib/hooks/useLocale";
 import { localStorage } from "@calcom/lib/webstorage";
 import classNames from "@calcom/ui/classNames";
@@ -302,8 +302,8 @@ export const AvailableTimes = ({
 };
 
 interface IOOOSlotProps {
-  fromUser?: IOutOfOfficeData["anyDate"]["fromUser"];
-  toUser?: IOutOfOfficeData["anyDate"]["toUser"];
+  fromUser?: OutOfOfficeRanges["anyDate"]["fromUser"];
+  toUser?: OutOfOfficeRanges["anyDate"]["toUser"];
   reason?: string;
   emoji?: string;
   time?: string;
