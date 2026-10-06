@@ -1,6 +1,6 @@
 import type { Dayjs } from "@calcom/dayjs";
 import dayjs from "@calcom/dayjs";
-import type { IOutOfOfficeData } from "@calcom/lib/getUserAvailability";
+import type { OutOfOfficeRanges } from "@calcom/lib/getUserAvailability";
 import type { Availability } from "@calcom/prisma/client";
 
 export type DateRange = {
@@ -154,7 +154,7 @@ export function buildDateRanges({
   dateFrom: Dayjs;
   dateTo: Dayjs;
   travelSchedules: TravelSchedule[];
-  outOfOffice?: IOutOfOfficeData;
+  outOfOffice?: OutOfOfficeRanges;
 }): { dateRanges: DateRange[]; oooExcludedDateRanges: DateRange[] } {
   const dateFromOrganizerTZ = dateFrom.tz(timeZone);
   const groupedWorkingHours = groupByDate(

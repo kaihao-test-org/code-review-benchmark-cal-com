@@ -1,6 +1,6 @@
 import type { Dayjs } from "@calcom/dayjs";
 import dayjs from "@calcom/dayjs";
-import type { IFromUser, IOutOfOfficeData, IToUser } from "@calcom/lib/getUserAvailability";
+import type { IFromUser, OutOfOfficeRanges, IToUser } from "@calcom/lib/getUserAvailability";
 import { withReporting } from "@calcom/lib/sentryWrapper";
 
 import type { DateRange } from "./date-ranges";
@@ -13,7 +13,7 @@ export type GetSlots = {
   minimumBookingNotice: number;
   eventLength: number;
   offsetStart?: number;
-  datesOutOfOffice?: IOutOfOfficeData;
+  datesOutOfOffice?: OutOfOfficeRanges;
 };
 export type TimeFrame = { userIds?: number[]; startTime: number; endTime: number };
 
@@ -34,7 +34,7 @@ function buildSlotsWithDateRanges({
   timeZone: string;
   minimumBookingNotice: number;
   offsetStart?: number;
-  datesOutOfOffice?: IOutOfOfficeData;
+  datesOutOfOffice?: OutOfOfficeRanges;
 }) {
   // keep the old safeguards in; may be needed.
   frequency = minimumOfOne(frequency);
