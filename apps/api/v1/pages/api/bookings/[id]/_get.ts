@@ -1,5 +1,6 @@
 import type { NextApiRequest } from "next";
 
+import { HttpError } from "@calcom/lib/http-error";
 import { defaultResponder } from "@calcom/lib/server/defaultResponder";
 import prisma from "@calcom/prisma";
 
@@ -106,6 +107,11 @@ export async function getHandler(req: NextApiRequest) {
       eventType: expand.includes("team") ? { include: { team: true } } : false,
     },
   });
+
+  if (!booking) {
+    throw new HttpError({ statusCode: 404, message: `No booking found with id ${id}` });
+  }
+
   return { booking: schemaBookingReadPublic.parse(booking) };
 }
 
