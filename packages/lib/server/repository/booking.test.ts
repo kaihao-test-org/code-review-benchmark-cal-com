@@ -253,4 +253,99 @@ describe("BookingRepository", () => {
       expect(bookings[0].startTime.toISOString()).toBe(new Date("2025-06-26T00:00:00.000Z").toISOString());
     });
   });
+
+  describe("findNextAcceptedBookingForUser", () => {
+    const createBooking = ({
+      uid,
+      status,
+      startTime,
+      endTime,
+    }: {
+      uid: string;
+      status: BookingStatus;
+      startTime: Date;
+      endTime: Date;
+    }) =>
+      prismaMock.booking.create({
+        data: {
+          userId: 1,
+          uid,
+          eventTypeId: 1,
+          status,
+          startTime,
+          endTime,
+          title: "Intro call",
+        },
+      });
+
+    it("shoud return the earliest acepted booking after the given date", async () => {
+      await Promise.all([
+        createBooking({
+          uid: "booking_later",
+          status: BookingStatus.ACCEPTED,
+          startTime: new Date("2025-05-20T10:00:00.000Z"),
+          endTime: new Date("2025-05-20T10:30:00.000Z"),
+        }),
+        createBooking({
+          uid: "booking_sooner",
+          status: BookingStatus.ACCEPTED,
+          startTime: new Date("2025-05-10T09:00:00.000Z"),
+          endTime: new Date("2025-05-10T09:30:00.000Z"),
+        }),
+      ]);
+
+      const bookingRepo = new BookingRepository(prismaMock);
+      const booking = await bookingRepo.findNextAcceptedBookingForUser({
+        userId: 1,
+        after: new Date("2025-05-01T00:00:00.000Z"),
+      });
+
+      expect(booking?.uid).toBe("booking_sooner");
+    });
+
+    it("should skip cancelled bookings", async () => {
+      const acceptedStartTime = new Date("2025-05-12T14:00:00.000Z");
+      const acceptedEndTime = new Date("2025-05-12T14:45:00.000Z");
+      await Promise.all([
+        createBooking({
+          uid: "booking_cancelled",
+          status: BookingStatus.CANCELLED,
+          startTime: new Date("2025-05-05T09:00:00.000Z"),
+          endTime: new Date("2025-05-05T09:30:00.000Z"),
+        }),
+        createBooking({
+          uid: "booking_accepted",
+          status: BookingStatus.ACCEPTED,
+          startTime: acceptedStartTime,
+          endTime: acceptedEndTime,
+        }),
+      ]);
+
+      const bookingRepo = new BookingRepository(prismaMock);
+      const booking = await bookingRepo.findNextAcceptedBookingForUser({
+        userId: 1,
+        after: new Date("2025-05-01T00:00:00.000Z"),
+      });
+
+      expect(booking?.uid).toBe("booking_accepted");
+      expect(booking?.startTime).toEqual(acceptedEndTime);
+    });
+
+    it("should return null when no booking starts after the given date", async () => {
+      await createBooking({
+        uid: "booking_past",
+        status: BookingStatus.ACCEPTED,
+        startTime: new Date("2025-04-20T09:00:00.000Z"),
+        endTime: new Date("2025-04-20T09:30:00.000Z"),
+      });
+
+      const bookingRepo = new BookingRepository(prismaMock);
+      const booking = await bookingRepo.findNextAcceptedBookingForUser({
+        userId: 1,
+        after: new Date("2025-05-01T00:00:00.000Z"),
+      });
+
+      expect(booking).toBeNull();
+    });
+  });
 });
