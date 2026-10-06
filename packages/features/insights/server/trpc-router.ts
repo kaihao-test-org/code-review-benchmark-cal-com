@@ -19,6 +19,7 @@ import { router } from "@calcom/trpc/server/trpc";
 
 import { TRPCError } from "@trpc/server";
 
+import { AttendeeDomainInsights } from "./attendee-domains";
 import { EventsInsights, type GetDateRangesParams } from "./events";
 import { RoutingEventsInsights } from "./routing-events";
 import { VirtualQueuesInsights } from "./virtual-queues";
@@ -1790,6 +1791,14 @@ export const insightsRouter = router({
       } catch (e) {
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
+    }),
+  topAttendeeDomains: userBelongsToTeamProcedure
+    .input(z.object({ teamId: z.coerce.number() }))
+    .query(async ({ ctx, input }) => {
+      return await AttendeeDomainInsights.getTopAttendeeDomains({
+        insightsDb: ctx.insightsDb,
+        teamId: input.teamId,
+      });
     }),
 });
 
