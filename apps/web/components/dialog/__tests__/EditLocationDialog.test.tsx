@@ -32,9 +32,18 @@ vi.mock("next/navigation", async (importOriginal) => {
   };
 });
 
-vi.mock("@calcom/lib/hooks/useLocale", () => ({
-  useLocale: () => ({ t: (key: string) => key }),
-}));
+vi.mock("@calcom/lib/hooks/useLocale", () => {
+  const localeModuleMock = {
+    useLocale: () => ({ t: (key: string) => key }),
+  };
+  return {
+    ...localeModuleMock,
+    useCalendarLocale: () => {
+      const { t, ...locale } = localeModuleMock.useLocale();
+      return { ...locale, translate: t };
+    },
+  };
+});
 
 vi.mock("../../../lib/QueryCell", () => ({
   QueryCell: vi.fn(),

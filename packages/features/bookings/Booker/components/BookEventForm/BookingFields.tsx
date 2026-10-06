@@ -6,7 +6,7 @@ import { useBookerStore } from "@calcom/features/bookings/Booker/store";
 import type { GetBookingType } from "@calcom/features/bookings/lib/get-booking";
 import getLocationOptionsForSelect from "@calcom/features/bookings/lib/getLocationOptionsForSelect";
 import { FormBuilderField } from "@calcom/features/form-builder/FormBuilderField";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import type { RouterOutputs } from "@calcom/trpc/react";
 
 import { SystemField } from "../../../lib/SystemField";
@@ -24,7 +24,7 @@ export const BookingFields = ({
   bookingData?: GetBookingType | null;
   isDynamicGroupBooking: boolean;
 }) => {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   const { watch, setValue } = useFormContext();
   const locationResponse = watch("responses.location");
   const currentView = rescheduleUid ? "reschedule" : "";

@@ -59,20 +59,29 @@ vi.mock("@calcom/lib/OgImages", async () => {
   return {};
 });
 
-vi.mock("@calcom/lib/hooks/useLocale", () => ({
-  useLocale: () => {
-    return {
-      t: (str: string) => str,
-      isLocaleReady: true,
-      i18n: {
-        language: "en",
-        defaultLocale: "en",
-        locales: ["en"],
-        exists: () => false,
-      },
-    };
-  },
-}));
+vi.mock("@calcom/lib/hooks/useLocale", () => {
+  const localeModuleMock = {
+    useLocale: () => {
+      return {
+        t: (str: string) => str,
+        isLocaleReady: true,
+        i18n: {
+          language: "en",
+          defaultLocale: "en",
+          locales: ["en"],
+          exists: () => false,
+        },
+      };
+    },
+  };
+  return {
+    ...localeModuleMock,
+    useCalendarLocale: () => {
+      const { t, ...locale } = localeModuleMock.useLocale();
+      return { ...locale, translate: t };
+    },
+  };
+});
 
 vi.mock("@calcom/atoms/hooks/useIsPlatform", () => ({
   useIsPlatform: () => {

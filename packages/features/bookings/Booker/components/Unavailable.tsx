@@ -1,4 +1,4 @@
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 
 const UnAvailableMessage = ({ children, title }: { children: React.ReactNode; title: string }) => (
   <div className="mx-auto w-full max-w-2xl">
@@ -10,7 +10,7 @@ const UnAvailableMessage = ({ children, title }: { children: React.ReactNode; ti
 );
 
 export const Away = () => {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
 
   return (
     <UnAvailableMessage title={`😴 ${t("user_away")}`}>
@@ -20,7 +20,7 @@ export const Away = () => {
 };
 
 export const NotFound = () => {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
 
   return (
     <UnAvailableMessage title={t("404_page_not_found")}>

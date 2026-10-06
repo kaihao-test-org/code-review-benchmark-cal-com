@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { Icon } from "@calcom/ui/components/icon";
 
 export const DryRunMessage = ({ isEmbed }: { isEmbed?: boolean }) => {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   const [isVisible, setIsVisible] = useState(true);
 
   if (!isVisible) return null;

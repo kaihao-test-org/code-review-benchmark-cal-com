@@ -5,7 +5,7 @@ import { useIsPlatform } from "@calcom/atoms/hooks/useIsPlatform";
 import dayjs from "@calcom/dayjs";
 import { useIsEmbed } from "@calcom/embed-core/embed-iframe";
 import { WEBAPP_URL } from "@calcom/lib/constants";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { BookerLayouts } from "@calcom/prisma/zod-utils";
 import { Button } from "@calcom/ui/components/button";
 import { ButtonGroup } from "@calcom/ui/components/buttonGroup";
@@ -34,7 +34,7 @@ export function Header({
   isMyLink: boolean;
   renderOverlay?: () => JSX.Element | null;
 }) {
-  const { t, i18n } = useLocale();
+  const { translate: t, i18n } = useCalendarLocale();
   const isEmbed = useIsEmbed();
   const [layout, setLayout] = useBookerStore((state) => [state.layout, state.setLayout], shallow);
   const selectedDateString = useBookerStore((state) => state.selectedDate);
@@ -177,7 +177,7 @@ const LayoutToggle = ({
   const isEmbed = useIsEmbed();
   const isPlatform = useIsPlatform();
 
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
 
   const layoutOptions = useMemo(() => {
     return [

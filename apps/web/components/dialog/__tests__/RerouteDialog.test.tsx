@@ -81,9 +81,18 @@ vi.mock("@calcom/app-store/routing-forms/components/FormInputFields", () => ({
   FormInputFieldsSkeleton: vi.fn(() => <div data-testid="mock-form-input-fields-skeleton" />),
 }));
 
-vi.mock("@calcom/lib/hooks/useLocale", () => ({
-  useLocale: vi.fn(() => ({ t: (key: string) => key })),
-}));
+vi.mock("@calcom/lib/hooks/useLocale", () => {
+  const localeModuleMock = {
+    useLocale: vi.fn(() => ({ t: (key: string) => key })),
+  };
+  return {
+    ...localeModuleMock,
+    useCalendarLocale: () => {
+      const { t, ...locale } = localeModuleMock.useLocale();
+      return { ...locale, translate: t };
+    },
+  };
+});
 
 vi.mock("@calcom/web/lib/hooks/useRouterQuery", () => ({
   default: vi.fn(() => {

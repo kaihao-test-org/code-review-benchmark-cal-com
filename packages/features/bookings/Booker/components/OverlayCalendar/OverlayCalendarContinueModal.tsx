@@ -1,6 +1,6 @@
 import { Dialog } from "@calcom/features/components/controlled-dialog";
 import { APP_NAME } from "@calcom/lib/constants";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { Button } from "@calcom/ui/components/button";
 import { DialogContent, DialogFooter } from "@calcom/ui/components/dialog";
 
@@ -11,7 +11,7 @@ interface IOverlayCalendarContinueModalProps {
 }
 
 export function OverlayCalendarContinueModal(props: IOverlayCalendarContinueModalProps) {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   return (
     <>
       <Dialog open={props.open} onOpenChange={props.onClose}>
