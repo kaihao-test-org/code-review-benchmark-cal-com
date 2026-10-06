@@ -1,6 +1,6 @@
 "use client";
 
-import { useDataTable } from "../../hooks";
+import { useTableState } from "../../hooks";
 import type { FilterableColumn } from "../../lib/types";
 import { ZSingleSelectFilterValue, ColumnFilterType } from "../../lib/types";
 import { BaseSelectFilterOptions } from "./BaseSelectFilterOptions";
@@ -10,7 +10,7 @@ export type SingleSelectFilterOptionsProps = {
 };
 
 export function SingleSelectFilterOptions({ column }: SingleSelectFilterOptionsProps) {
-  const { updateFilter } = useDataTable();
+  const { updateFilter } = useTableState().state;
 
   return (
     <BaseSelectFilterOptions<ColumnFilterType.SINGLE_SELECT>

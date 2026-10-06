@@ -4,7 +4,7 @@ import { type Table } from "@tanstack/react-table";
 // eslint-disable-next-line no-restricted-imports
 import { Fragment } from "react";
 
-import { useDataTable, useFilterableColumns } from "../../hooks";
+import { useTableState, useFilterableColumns } from "../../hooks";
 import { ColumnFilterType } from "../../lib/types";
 import { DateRangeFilter } from "./DateRangeFilter";
 import { FilterPopover } from "./FilterPopover";
@@ -15,7 +15,7 @@ interface ActiveFiltersProps<TData> {
 }
 
 export function ActiveFilters<TData>({ table }: ActiveFiltersProps<TData>) {
-  const { activeFilters } = useDataTable();
+  const { activeFilters } = useTableState().state;
   const filterableColumns = useFilterableColumns(table);
 
   return (

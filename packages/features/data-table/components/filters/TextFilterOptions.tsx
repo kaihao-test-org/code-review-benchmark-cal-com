@@ -6,7 +6,7 @@ import { useLocale } from "@calcom/lib/hooks/useLocale";
 import { Button } from "@calcom/ui/components/button";
 import { Form, Select, Input } from "@calcom/ui/components/form";
 
-import { useFilterValue, useDataTable } from "../../hooks";
+import { useFilterValue, useTableState } from "../../hooks";
 import type { FilterableColumn } from "../../lib/types";
 import { ZTextFilterValue, ColumnFilterType } from "../../lib/types";
 import { useTextFilterOperatorOptions } from "./utils";
@@ -19,7 +19,7 @@ export function TextFilterOptions({ column }: TextFilterOptionsProps) {
   const { t } = useLocale();
   const textFilterOperatorOptions = useTextFilterOperatorOptions(column.textOptions?.allowedOperators);
   const filterValue = useFilterValue(column.id, ZTextFilterValue);
-  const { updateFilter, removeFilter } = useDataTable();
+  const { updateFilter, removeFilter } = useTableState().state;
 
   const form = useForm({
     defaultValues: {

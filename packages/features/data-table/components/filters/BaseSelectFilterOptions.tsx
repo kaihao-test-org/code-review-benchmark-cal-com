@@ -16,7 +16,7 @@ import {
 } from "@calcom/ui/components/command";
 import { Icon } from "@calcom/ui/components/icon";
 
-import { useDataTable, useFilterValue } from "../../hooks";
+import { useTableState, useFilterValue } from "../../hooks";
 import type {
   ColumnFilterType,
   FacetedValue,
@@ -99,7 +99,7 @@ export function BaseSelectFilterOptions<
   const { t } = useLocale();
 
   const filterValue = useFilterValue(column.id, filterValueSchema);
-  const { removeFilter } = useDataTable();
+  const { removeFilter } = useTableState().state;
 
   const options = useMemo(() => {
     const sectionedOptions = getSectionedOptions(column.options);

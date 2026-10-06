@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "@calcom/dayjs";
 import { DataTableProvider } from "@calcom/features/data-table/DataTableProvider";
 import { DataTable, DataTableToolbar } from "@calcom/features/data-table/components";
-import { useDataTable } from "@calcom/features/data-table/hooks";
+import { useTableState } from "@calcom/features/data-table/hooks";
 import { APP_NAME, WEBAPP_URL } from "@calcom/lib/constants";
 import type { DateRange } from "@calcom/lib/date-ranges";
 import { useLocale } from "@calcom/lib/hooks/useLocale";
@@ -80,7 +80,7 @@ function AvailabilitySliderTableContent(props: { isOrg: boolean }) {
   const [browsingDate, setBrowsingDate] = useState(dayjs());
   const [editSheetOpen, setEditSheetOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<SliderUser | null>(null);
-  const { searchTerm } = useDataTable();
+  const { searchTerm } = useTableState().state;
 
   const tbStore = createTimezoneBuddyStore({
     browsingDate: browsingDate.toDate(),

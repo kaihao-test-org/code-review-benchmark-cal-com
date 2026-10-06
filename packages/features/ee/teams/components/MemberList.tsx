@@ -24,7 +24,7 @@ import {
   DataTableFilters,
   DataTableWrapper,
   DataTableSelectionBar,
-  useDataTable,
+  useTableState,
   useFetchMoreOnBottomReached,
   useColumnFilters,
 } from "@calcom/features/data-table";
@@ -174,7 +174,7 @@ function MemberListContent(props: Props) {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { searchTerm } = useDataTable();
+  const { searchTerm } = useTableState().state;
 
   const { data, isPending, hasNextPage, fetchNextPage, isFetching } =
     trpc.viewer.teams.listMembers.useInfiniteQuery(

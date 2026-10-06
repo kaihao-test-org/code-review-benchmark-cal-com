@@ -11,7 +11,7 @@ import {
   Rectangle,
 } from "recharts";
 
-import { useDataTable } from "@calcom/features/data-table";
+import { useTableState } from "@calcom/features/data-table";
 import { useLocale } from "@calcom/lib/hooks/useLocale";
 import { CURRENT_TIMEZONE } from "@calcom/lib/timezoneConstants";
 import { trpc } from "@calcom/trpc";
@@ -99,7 +99,7 @@ const CustomTooltip = ({
 
 export const BookingsByHourChart = () => {
   const { t } = useLocale();
-  const { timeZone } = useDataTable();
+  const { timeZone } = useTableState().state;
   const { scope, selectedTeamId, memberUserId, startDate, endDate, eventTypeId } = useInsightsParameters();
 
   const { data, isSuccess, isPending } = trpc.viewer.insights.bookingsByHourStats.useQuery(
