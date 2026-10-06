@@ -4,6 +4,7 @@ import dayjs from "@calcom/dayjs";
 
 import {
   buildDateRanges,
+  getMaxConcurrentRanges,
   intersect,
   processDateOverride,
   processWorkingHours,
@@ -1105,5 +1106,40 @@ describe("intersect function comprehensive tests", () => {
       expect(result[1].end.toISOString()).toBe("2024-06-01T12:30:00.000Z"); // Correct: no extension
       expect(result.find((r) => r.start.toISOString() === "2024-06-02T04:00:00.000Z")).toBeUndefined(); // Correct: June 2 excluded
     });
+  });
+});
+
+describe("getMaxConcurrentRanges", () => {
+  it("returns 0 when there are no ranges", () => {
+    expect(getMaxConcurrentRanges([])).toBe(0);
+  });
+
+  it("returns 1 for ranges that do not overlap", () => {
+    const ranges = [
+      { start: dayjs("2025-01-06T09:00:00.000Z"), end: dayjs("2025-01-06T10:00:00.000Z") },
+      { start: dayjs("2025-01-06T11:00:00.000Z"), end: dayjs("2025-01-06T12:00:00.000Z") },
+    ];
+
+    expect(getMaxConcurrentRanges(ranges)).toBe(1);
+  });
+
+  it("does not count back-to-back ranges as concurrent", () => {
+    const ranges = [
+      { start: dayjs("2025-01-06T09:00:00.000Z"), end: dayjs("2025-01-06T10:00:00.000Z") },
+      { start: dayjs("2025-01-06T10:00:00.000Z"), end: dayjs("2025-01-06T11:00:00.000Z") },
+    ];
+
+    expect(getMaxConcurrentRanges(ranges)).toBe(1);
+  });
+
+  it("returns the highest number of ranges active at the same time", () => {
+    const ranges = [
+      { start: dayjs("2025-01-06T09:00:00.000Z"), end: dayjs("2025-01-06T12:00:00.000Z") },
+      { start: dayjs("2025-01-06T10:00:00.000Z"), end: dayjs("2025-01-06T11:00:00.000Z") },
+      { start: dayjs("2025-01-06T10:30:00.000Z"), end: dayjs("2025-01-06T13:00:00.000Z") },
+      { start: dayjs("2025-01-06T12:30:00.000Z"), end: dayjs("2025-01-06T14:00:00.000Z") },
+    ];
+
+    expect(getMaxConcurrentRanges(ranges)).toBe(3);
   });
 });
