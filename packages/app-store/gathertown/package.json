@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "private": true,
+  "name": "@calcom/gathertown",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "description": "Gather is a virtual office where remote teams meet, collaborate and catch up in a shared space.",
+  "dependencies": {
+    "@calcom/lib": "*"
+  },
+  "devDependencies": {
+    "@calcom/types": "*"
+  }
+}
