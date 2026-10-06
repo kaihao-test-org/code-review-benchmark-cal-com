@@ -6,21 +6,30 @@ import { PeriodType } from "@calcom/prisma/enums";
 
 import NoAvailabilityDialog from "../NoAvailabilityDialog";
 
-vi.mock("@calcom/lib/hooks/useLocale", () => ({
-  useLocale: () => ({
-    t: (key: string, vars?: { [key: string]: string | number }) => {
-      if (key === "no_availability_in_month") return `No availability in ${vars?.month}`;
-      if (key === "no_availability_rolling")
-        return `Scheduling is only available up to ${vars?.days} in advance. Please check again soon.`;
-      if (key === "no_availability_range")
-        return `Scheduling ended on ${vars?.date}. Please check again soon.`;
-      if (key === "close") return "Close";
-      if (key === "view_next_month") return "View next month";
-      if (key === "calendar_days") return "calendar days";
-      return key;
+vi.mock("@calcom/lib/hooks/useLocale", () => {
+  const localeModuleMock = {
+    useLocale: () => ({
+      t: (key: string, vars?: { [key: string]: string | number }) => {
+        if (key === "no_availability_in_month") return `No availability in ${vars?.month}`;
+        if (key === "no_availability_rolling")
+          return `Scheduling is only available up to ${vars?.days} in advance. Please check again soon.`;
+        if (key === "no_availability_range")
+          return `Scheduling ended on ${vars?.date}. Please check again soon.`;
+        if (key === "close") return "Close";
+        if (key === "view_next_month") return "View next month";
+        if (key === "calendar_days") return "calendar days";
+        return key;
+      },
+    }),
+  };
+  return {
+    ...localeModuleMock,
+    useCalendarLocale: () => {
+      const { t, ...locale } = localeModuleMock.useLocale();
+      return { ...locale, translate: t };
     },
-  }),
-}));
+  };
+});
 
 beforeEach(() => {
   vi.clearAllMocks();

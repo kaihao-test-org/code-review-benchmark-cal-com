@@ -80,9 +80,18 @@ vi.mock("../../components/react-awesome-query-builder/widgets", () => ({
 }));
 
 // Mock the necessary dependencies
-vi.mock("@calcom/lib/hooks/useLocale", () => ({
-  useLocale: vi.fn(() => ({ t: (key: string) => key })),
-}));
+vi.mock("@calcom/lib/hooks/useLocale", () => {
+  const localeModuleMock = {
+    useLocale: vi.fn(() => ({ t: (key: string) => key })),
+  };
+  return {
+    ...localeModuleMock,
+    useCalendarLocale: () => {
+      const { t, ...locale } = localeModuleMock.useLocale();
+      return { ...locale, translate: t };
+    },
+  };
+});
 
 let findTeamMembersMatchingAttributeLogicResponse: {
   result: { users: { email: string }[] } | null;

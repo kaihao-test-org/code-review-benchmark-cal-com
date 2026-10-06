@@ -89,7 +89,7 @@ vi.mock("@calcom/lib/hooks/useCompatSearchParams", () => {
 });
 
 vi.mock("@calcom/lib/hooks/useLocale", () => {
-  return {
+  const localeModuleMock = {
     useLocale: vi.fn().mockReturnValue({
       t: vi.fn().mockImplementation((text: string) => {
         return text;
@@ -98,6 +98,13 @@ vi.mock("@calcom/lib/hooks/useLocale", () => {
         language: "en",
       },
     }),
+  };
+  return {
+    ...localeModuleMock,
+    useCalendarLocale: () => {
+      const { t, ...locale } = localeModuleMock.useLocale();
+      return { ...locale, translate: t };
+    },
   };
 });
 

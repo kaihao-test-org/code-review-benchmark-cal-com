@@ -9,7 +9,7 @@ import { doesAppSupportTeamInstall, isConferencing } from "@calcom/app-store/uti
 import { AppOnboardingSteps } from "@calcom/lib/apps/appOnboardingSteps";
 import { getAppOnboardingUrl } from "@calcom/lib/apps/getAppOnboardingUrl";
 import { WEBAPP_URL } from "@calcom/lib/constants";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import type { UserAdminTeams } from "@calcom/lib/server/repository/user";
 import type { AppFrontendPayload as App } from "@calcom/types/App";
 import type { CredentialFrontendPayload as Credential } from "@calcom/types/Credential";
@@ -27,7 +27,7 @@ interface AppCardProps {
 }
 
 export function AppCard({ app, credentials, searchText, userAdminTeams }: AppCardProps) {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   const router = useRouter();
   const allowedMultipleInstalls = app.categories && app.categories.indexOf("calendar") > -1;
   const appAdded = (credentials && credentials.length) || 0;
@@ -196,7 +196,7 @@ const InstallAppButtonChild = ({
 }: {
   paid: App["paid"];
 } & ButtonProps) => {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   // Paid apps don't support team installs at the moment
   // Also, cal.ai(the only paid app at the moment) doesn't support team install either
   if (paid) {

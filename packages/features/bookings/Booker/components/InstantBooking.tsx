@@ -1,5 +1,5 @@
 import type { BookerEvent } from "@calcom/features/bookings/types";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import type { User } from "@calcom/prisma/client";
 import { UserAvatarGroupWithOrg } from "@calcom/ui/components/avatar";
 import { Button } from "@calcom/ui/components/button";
@@ -12,11 +12,11 @@ interface IInstantBookingProps {
 }
 
 export const InstantBooking = ({ onConnectNow, event }: IInstantBookingProps) => {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
 
   return (
     <div className=" bg-default border-subtle mx-2 block items-center gap-3 rounded-xl border p-[6px] text-sm shadow-sm delay-1000 sm:flex">
-      <div className="flex items-center gap-3 ps-1">
+      <div className="ps-1 flex items-center gap-3">
         <div className="relative">
           <UserAvatarGroupWithOrg
             size="sm"

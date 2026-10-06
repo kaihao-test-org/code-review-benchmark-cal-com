@@ -6,7 +6,7 @@ import { z } from "zod";
 import type { EventLocationType } from "@calcom/app-store/locations";
 import { getEventLocationType } from "@calcom/app-store/locations";
 import { Dialog } from "@calcom/features/components/controlled-dialog";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { Button } from "@calcom/ui/components/button";
 import { DialogContent, DialogFooter, DialogClose } from "@calcom/ui/components/dialog";
 import { Form } from "@calcom/ui/components/form";
@@ -36,7 +36,7 @@ export function AppSetDefaultLinkDialog({
   onSuccess: () => void;
   handleUpdateUserDefaultConferencingApp: (params: UpdateUsersDefaultConferencingAppParams) => void;
 }) {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   const eventLocationTypeOptions = getEventLocationType(locationType.type);
 
   const form = useForm<LocationTypeSetLinkDialogFormProps>({

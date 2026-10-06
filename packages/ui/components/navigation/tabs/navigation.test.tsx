@@ -10,17 +10,26 @@ vi.mock("@calcom/lib/hooks/useUrlMatchesCurrentUrl", () => ({
   useUrlMatchesCurrentUrl: () => false,
 }));
 
-vi.mock("@calcom/lib/hooks/useLocale", () => ({
-  useLocale: () => ({
-    t: (str: string) => str,
-    isLocaleReady: true,
-    i18n: {
-      language: "en",
-      defaultLocale: "en",
-      locales: ["en"],
+vi.mock("@calcom/lib/hooks/useLocale", () => {
+  const localeModuleMock = {
+    useLocale: () => ({
+      t: (str: string) => str,
+      isLocaleReady: true,
+      i18n: {
+        language: "en",
+        defaultLocale: "en",
+        locales: ["en"],
+      },
+    }),
+  };
+  return {
+    ...localeModuleMock,
+    useCalendarLocale: () => {
+      const { t, ...locale } = localeModuleMock.useLocale();
+      return { ...locale, translate: t };
     },
-  }),
-}));
+  };
+});
 
 describe("Navigation Components", () => {
   describe("HorizontalTabs", () => {

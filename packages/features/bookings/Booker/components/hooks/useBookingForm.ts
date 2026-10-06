@@ -7,7 +7,7 @@ import type { EventLocationType } from "@calcom/app-store/locations";
 import { useBookerStore } from "@calcom/features/bookings/Booker/store";
 import getBookingResponsesSchema from "@calcom/features/bookings/lib/getBookingResponsesSchema";
 import type { BookerEvent } from "@calcom/features/bookings/types";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 
 import { useInitialFormValues } from "./useInitialFormValues";
 
@@ -39,7 +39,7 @@ export const useBookingForm = ({
 }: IUseBookingForm) => {
   const rescheduleUid = useBookerStore((state) => state.rescheduleUid);
   const bookingData = useBookerStore((state) => state.bookingData);
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   const bookerFormErrorRef = useRef<HTMLDivElement>(null);
 
   const bookingFormSchema = z
