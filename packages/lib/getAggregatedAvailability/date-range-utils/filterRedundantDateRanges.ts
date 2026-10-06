@@ -24,11 +24,11 @@ export function filterRedundantDateRanges(dateRanges: DateRange[]): DateRange[] 
       return true;
     }
 
-    const containingIntervals = searchAlgorithm.findContainingIntervals(
-      range.start.valueOf(),
-      range.end.valueOf(),
-      index
-    );
+    const containingIntervals = searchAlgorithm.findContainingIntervals({
+      start: range.start.valueOf(),
+      end: range.end.valueOf(),
+      index: index,
+    });
 
     for (const containingNode of containingIntervals) {
       const otherRange = containingNode.item;
