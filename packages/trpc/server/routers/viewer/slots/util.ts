@@ -1205,7 +1205,7 @@ export class AvailableSlotsService {
               time: slot.time,
               busy: busySlotsFromReservedSlots,
               ...availabilityCheckProps,
-            })
+            }).conflict
           ) {
             return slot;
           }
