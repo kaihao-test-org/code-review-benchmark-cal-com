@@ -9,7 +9,7 @@ import {
   DataTableWrapper,
   DataTableFilters,
   DataTableSkeleton,
-  useDataTable,
+  useTableState,
   DateRangeFilter,
   DataTableSegment,
   ColumnFilterType,
@@ -51,7 +51,7 @@ export function RoutingFormResponsesTable() {
 
   const getInsightsFacetedUniqueValues = useInsightsFacetedUniqueValues({ headers, userId, teamId, isAll });
 
-  const { sorting, limit, offset, ctaContainerRef, updateFilter } = useDataTable();
+  const { sorting, limit, offset, ctaContainerRef, updateFilter } = useTableState().state;
 
   const { data, isPending } = trpc.viewer.insights.routingFormResponses.useQuery({
     teamId,

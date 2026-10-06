@@ -7,7 +7,7 @@ import { useMemo, useRef } from "react";
 import { WipeMyCalActionButton } from "@calcom/app-store/wipemycalother/components";
 import dayjs from "@calcom/dayjs";
 import {
-  useDataTable,
+  useTableState,
   DataTableProvider,
   DataTableWrapper,
   DataTableFilters,
@@ -129,7 +129,7 @@ function BookingsContent({ status }: BookingsProps) {
   const attendeeEmail = useFilterValue("attendeeEmail", ZTextFilterValue);
   const bookingUid = useFilterValue("bookingUid", ZTextFilterValue)?.data?.operand as string | undefined;
 
-  const { limit, offset } = useDataTable();
+  const { limit, offset } = useTableState().state;
 
   const query = trpc.viewer.bookings.get.useQuery({
     limit,

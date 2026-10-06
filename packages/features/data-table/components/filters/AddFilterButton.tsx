@@ -12,7 +12,7 @@ import { Icon } from "@calcom/ui/components/icon";
 import { Popover, PopoverTrigger, PopoverContent } from "@calcom/ui/components/popover";
 import { Tooltip } from "@calcom/ui/components/tooltip";
 
-import { useDataTable, useFilterableColumns } from "../../hooks";
+import { useTableState, useFilterableColumns } from "../../hooks";
 
 export interface AddFilterButtonProps<TData> {
   table: Table<TData>;
@@ -31,7 +31,7 @@ function AddFilterButtonComponent<TData>(
   ref: React.Ref<HTMLButtonElement>
 ) {
   const { t } = useLocale();
-  const { activeFilters, addFilter } = useDataTable();
+  const { activeFilters, addFilter } = useTableState().state;
   const [open, setOpen] = useState(false);
 
   const filterableColumns = useFilterableColumns(table);

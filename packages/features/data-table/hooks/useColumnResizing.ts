@@ -5,7 +5,7 @@ import type { Header, Table, ColumnSizingState } from "@tanstack/react-table";
 import debounce from "lodash/debounce";
 import { useCallback, useEffect, useRef, useMemo } from "react";
 
-import { useDebouncedWidth, useDataTable } from ".";
+import { useDebouncedWidth, useTableState } from ".";
 
 type UseColumnResizingProps<TData> = {
   enabled: boolean;
@@ -90,7 +90,8 @@ export function useColumnResizing<TData>({
   const columnSizing = useRef<ColumnSizingState>({});
   const initialColumnSizing = useRef<ColumnSizingState>({});
   const resizedColumns = useRef<Set<string>>(new Set());
-  const { columnSizing: loadedColumnSizing, setColumnSizing: setColumnSizingToContext } = useDataTable();
+  const { columnSizing: loadedColumnSizing, setColumnSizing: setColumnSizingToContext } =
+    useTableState().state;
 
   const debouncedSaveColumnSizing = useMemo(
     () => debounce(setColumnSizingToContext, 1000),

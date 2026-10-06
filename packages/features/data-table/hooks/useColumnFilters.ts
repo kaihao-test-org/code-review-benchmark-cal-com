@@ -3,10 +3,10 @@ import { useCallback, useMemo } from "react";
 import type { ColumnFilter } from "../lib/types";
 import { ZFilterValue } from "../lib/types";
 import { isMultiSelectFilterValue } from "../lib/utils";
-import { useDataTable } from "./useDataTable";
+import { useTableState } from "./useTableState";
 
 export function useColumnFilters({ exclude }: { exclude?: string[] } = {}): ColumnFilter[] {
-  const { activeFilters } = useDataTable();
+  const { activeFilters } = useTableState().state;
 
   // Stringify the exclude array for stable memoization
   const excludeKey = useMemo(() => JSON.stringify(exclude?.sort()), [exclude]);
