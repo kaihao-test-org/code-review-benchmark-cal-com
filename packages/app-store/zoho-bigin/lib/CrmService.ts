@@ -14,7 +14,7 @@ import type { CredentialPayload } from "@calcom/types/Credential";
 import type { Contact, ContactCreateInput, CRM } from "@calcom/types/CrmService";
 
 import getAppKeysFromSlug from "../../_utils/getAppKeysFromSlug";
-import refreshOAuthTokens from "../../_utils/oauth/refreshOAuthTokens";
+import refreshIntegrationTokens from "../../_utils/oauth/integrationTokenRefresh";
 import { appKeysSchema } from "../zod";
 
 export type BiginToken = {
@@ -50,23 +50,26 @@ export default class BiginCrmService implements CRM {
    */
   private biginAuth(credential: CredentialPayload) {
     const credentialKey = credential.key as unknown as BiginToken;
-    const credentialId = credential.id;
+    const context = { credentialId: credential.id, userId: credential.id, key: credentialKey };
 
     const isTokenValid = (token: BiginToken) =>
       token.access_token && token.expiryDate && token.expiryDate > Date.now();
 
     return {
       getToken: () =>
-        isTokenValid(credentialKey)
-          ? Promise.resolve(credentialKey)
-          : this.refreshAccessToken(credentialId, credentialKey),
+        isTokenValid(credentialKey) ? Promise.resolve(credentialKey) : this.refreshAccessToken(context),
     };
   }
 
   /***
    * Fetches a new access token if stored token is expired.
    */
-  private async refreshAccessToken(credentialId: number, credentialKey: BiginToken) {
+  private async refreshAccessToken(context: {
+    credentialId: number;
+    userId: number | null;
+    key: BiginToken;
+  }) {
+    const { credentialId, userId, key: credentialKey } = context;
     this.log.debug("Refreshing token as it's invalid");
     const grantType = "refresh_token";
     const accountsUrl = `${credentialKey.accountServer}/oauth/v2/token`;
@@ -82,15 +85,16 @@ export default class BiginCrmService implements CRM {
       refresh_token: credentialKey.refresh_token,
     };
 
-    const tokenInfo = await refreshOAuthTokens(
-      async () =>
+    const tokenInfo = await refreshIntegrationTokens(
+      async () => ({ data: (await (async () =>
         await axios.post(accountsUrl, qs.stringify(formData), {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
           },
-        }),
+        }))()).data }),
       "zoho-bigin",
-      credentialId
+      { userId: userId },
+      async (response) => ({ data: await response.json() })
     );
 
     if (!tokenInfo.data.error) {

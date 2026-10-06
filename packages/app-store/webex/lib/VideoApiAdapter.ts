@@ -8,7 +8,7 @@ import type { CredentialPayload } from "@calcom/types/Credential";
 import type { PartialReference } from "@calcom/types/EventManager";
 import type { VideoApiAdapter, VideoCallData } from "@calcom/types/VideoApiAdapter";
 
-import refreshOAuthTokens from "../../_utils/oauth/refreshOAuthTokens";
+import refreshIntegrationTokens from "../../_utils/oauth/integrationTokenRefresh";
 import { getWebexAppKeys } from "./getWebexAppKeys";
 
 /** @link https://developer.webex.com/docs/meetings **/
@@ -59,7 +59,7 @@ const webexAuth = (credential: CredentialPayload) => {
   const refreshAccessToken = async (refreshToken: string) => {
     const { client_id, client_secret } = await getWebexAppKeys();
 
-    const response = await refreshOAuthTokens(
+    const response = await refreshIntegrationTokens(
       async () =>
         await fetch("https://webexapis.com/v1/access_token", {
           method: "POST",
@@ -74,7 +74,8 @@ const webexAuth = (credential: CredentialPayload) => {
           }),
         }),
       "webex",
-      credential.userId
+      { userId: credential.userId },
+      async (response) => response
     );
 
     const responseBody = await handleWebexResponse(response, credential.id);
