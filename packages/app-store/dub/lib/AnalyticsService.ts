@@ -6,7 +6,7 @@ import type { AnalyticsService, SendEventProps } from "@calcom/types/AnalyticsSe
 import type { CredentialPayload } from "@calcom/types/Credential";
 
 import getAppKeysFromSlug from "../../_utils/getAppKeysFromSlug";
-import refreshOAuthTokens from "../../_utils/oauth/refreshOAuthTokens";
+import refreshIntegrationTokens from "../../_utils/oauth/integrationTokenRefresh";
 import type { DubOAuthToken } from "./type";
 
 export default class DubService implements AnalyticsService {
@@ -59,7 +59,7 @@ export default class DubService implements AnalyticsService {
   private async refreshAccessToken(refreshToken: string): Promise<DubOAuthToken | undefined> {
     try {
       if (!refreshToken) return;
-      const newToken: DubOAuthToken = await refreshOAuthTokens(
+      const newToken: DubOAuthToken = await refreshIntegrationTokens(
         async () => {
           const response = await fetch(`https://api.dub.co/oauth/token`, {
             method: "POST",
@@ -89,7 +89,8 @@ export default class DubService implements AnalyticsService {
           return await response.json();
         },
         "dub",
-        this.credential.userId
+        { userId: this.credential.userId },
+        async (response) => response.json()
       );
 
       newToken.expiry_date = Date.now() + newToken.expires_in * 1000;
