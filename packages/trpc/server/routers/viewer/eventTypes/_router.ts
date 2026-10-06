@@ -9,6 +9,7 @@ import { ZDeleteInputSchema } from "./delete.schema";
 import { ZDuplicateInputSchema } from "./duplicate.schema";
 import { ZEventTypeInputSchema, ZGetEventTypesFromGroupSchema } from "./getByViewer.schema";
 import { ZGetTeamAndEventTypeOptionsSchema } from "./getTeamAndEventTypeOptions.schema";
+import { ZListTeamWithHostsInputSchema } from "./listTeamWithHosts.schema";
 import { get } from "./procedures/get";
 import { ZUpdateInputSchema } from "./update.schema";
 import { eventOwnerProcedure } from "./util";
@@ -20,6 +21,7 @@ type BookingsRouterHandlerCache = {
   getTeamAndEventTypeOptions?: typeof import("./getTeamAndEventTypeOptions.handler").getTeamAndEventTypeOptions;
   list?: typeof import("./list.handler").listHandler;
   listWithTeam?: typeof import("./listWithTeam.handler").listWithTeamHandler;
+  listTeamWithHosts?: typeof import("./listTeamWithHosts.handler").listTeamWithHostsHandler;
   create?: typeof import("./create.handler").createHandler;
   get?: typeof import("./get.handler").getHandler;
   update?: typeof import("./update.handler").updateHandler;
@@ -107,6 +109,15 @@ export const eventTypesRouter = router({
 
     return listWithTeamHandler({
       ctx,
+    });
+  }),
+
+  listTeamWithHosts: authedProcedure.input(ZListTeamWithHostsInputSchema).query(async ({ ctx, input }) => {
+    const { listTeamWithHostsHandler } = await import("./listTeamWithHosts.handler");
+
+    return listTeamWithHostsHandler({
+      ctx,
+      input,
     });
   }),
 
