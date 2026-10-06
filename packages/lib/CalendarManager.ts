@@ -212,7 +212,7 @@ export const deduplicateCredentialsBasedOnSelectedCalendars = ({
   return deduplicatedCredentials.filter((credential) => !credentialIdsToRemove.includes(credential.id));
 };
 
-export const getBusyCalendarTimes = async (
+export const readBusyCalendarTimes = async (
   /**
    * withCredentials can possibly have duplicate credential in case DelegationCredential is enabled.
    * There is no way to deduplicate that at the moment because a `credential` doesn't directly know to which external_id(or email it is connected to).
@@ -511,3 +511,5 @@ const processEvent = (calEvent: CalendarEvent): CalendarServiceEvent => {
 
   return calendarEvent;
 };
+
+export const getBusyCalendarTimes = readBusyCalendarTimes;
