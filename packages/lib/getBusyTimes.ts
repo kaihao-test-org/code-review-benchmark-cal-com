@@ -2,7 +2,7 @@ import type { Booking, EventType } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 
 import dayjs from "@calcom/dayjs";
-import { getBusyCalendarTimes } from "@calcom/lib/CalendarManager";
+import { readBusyCalendarTimes } from "@calcom/lib/CalendarManager";
 import { subtract } from "@calcom/lib/date-ranges";
 import { stringToDayjs } from "@calcom/lib/dayjs";
 import { intervalLimitKeyToUnit } from "@calcom/lib/intervalLimits/intervalLimit";
@@ -179,7 +179,7 @@ const _getBusyTimes = async (params: {
   performance.measure(`prisma booking get took $1'`, "prismaBookingGetStart", "prismaBookingGetEnd");
   if (credentials?.length > 0 && !bypassBusyCalendarTimes) {
     const startConnectedCalendarsGet = performance.now();
-    const calendarBusyTimes = await getBusyCalendarTimes(
+    const calendarBusyTimes = await readBusyCalendarTimes(
       credentials,
       startTime,
       endTime,

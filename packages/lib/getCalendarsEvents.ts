@@ -170,7 +170,7 @@ const getCalendarsEvents = async (
   const awaitedResults = await Promise.all(results);
   performance.mark("getBusyCalendarTimesEnd");
   performance.measure(
-    `getBusyCalendarTimes took $1 for creds ${calendarCredentials.map((cred) => cred.id)}`,
+    `readBusyCalendarTimes took $1 for creds ${calendarCredentials.map((cred) => cred.id)}`,
     "getBusyCalendarTimesStart",
     "getBusyCalendarTimesEnd"
   );

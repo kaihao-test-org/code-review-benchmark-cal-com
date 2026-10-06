@@ -1281,7 +1281,7 @@ describe("getSchedule", () => {
       const { dateString: plus2DateString } = getDate({ dateIncrement: 2 });
       const { dateString: plus3DateString } = getDate({ dateIncrement: 3 });
 
-      CalendarManagerMock.getBusyCalendarTimes.mockResolvedValue([
+      CalendarManagerMock.readBusyCalendarTimes.mockResolvedValue([
         {
           start: `${plus3DateString}T04:00:00.000Z`,
           end: `${plus3DateString}T05:59:59.000Z`,
@@ -1347,7 +1347,7 @@ describe("getSchedule", () => {
       const { dateString: plus2DateString } = getDate({ dateIncrement: 2 });
       const { dateString: plus3DateString } = getDate({ dateIncrement: 3 });
 
-      CalendarManagerMock.getBusyCalendarTimes.mockResolvedValue([
+      CalendarManagerMock.readBusyCalendarTimes.mockResolvedValue([
         {
           start: `${plus3DateString}T04:00:00.000Z`,
           end: `${plus3DateString}T05:59:59.000Z`,
@@ -1421,7 +1421,7 @@ describe("getSchedule", () => {
       const { dateString: plus1DateString } = getDate({ dateIncrement: 1 });
       const { dateString: plus2DateString } = getDate({ dateIncrement: 2 });
 
-      CalendarManagerMock.getBusyCalendarTimes.mockResolvedValue([]);
+      CalendarManagerMock.readBusyCalendarTimes.mockResolvedValue([]);
 
       const scenarioData = {
         eventTypes: [
