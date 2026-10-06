@@ -460,8 +460,10 @@ async function getCalendarBusyTimesOfInterval(
     usersWithCredentials.map((user) =>
       getBusyCalendarTimes(
         user.credentials,
-        getIntervalStartDate({ interval, rrTimestampBasis, meetingStartTime }).toISOString(),
-        getIntervalEndDate({ interval, rrTimestampBasis, meetingStartTime }).toISOString(),
+        {
+          start: getIntervalStartDate({ interval, rrTimestampBasis, meetingStartTime }).toISOString(),
+          end: getIntervalEndDate({ interval, rrTimestampBasis, meetingStartTime }).toISOString(),
+        },
         user.userLevelSelectedCalendars,
         true,
         true

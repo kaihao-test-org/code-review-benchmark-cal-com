@@ -222,12 +222,12 @@ export const getBusyCalendarTimes = async (
    *
    */
   withCredentials: CredentialForCalendarService[],
-  dateFrom: string,
-  dateTo: string,
+  range: { start: string; end: string },
   selectedCalendars: SelectedCalendar[],
   shouldServeCache?: boolean,
   includeTimeZone?: boolean
 ) => {
+  const { start: dateFrom, end: dateTo } = range;
   let results: (EventBusyDate & { timeZone?: string })[][] = [];
 
   const deduplicatedCredentials = deduplicateCredentialsBasedOnSelectedCalendars({
