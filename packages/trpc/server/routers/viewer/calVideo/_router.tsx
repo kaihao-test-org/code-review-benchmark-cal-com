@@ -3,11 +3,13 @@ import { router } from "../../../trpc";
 import { ZGetCalVideoRecordingsInputSchema } from "./getCalVideoRecordings.schema";
 import { ZGetDownloadLinkOfCalVideoRecordingsInputSchema } from "./getDownloadLinkOfCalVideoRecordings.schema";
 import { ZGetMeetingInformationInputSchema } from "./getMeetingInformation.schema";
+import { ZGetTranscriptsOfBookingInputSchema } from "./getTranscriptsOfBooking.schema";
 
 type CalVideoRouterHandlerCache = {
   getCalVideoRecordings?: typeof import("./getCalVideoRecordings.handler").getCalVideoRecordingsHandler;
   getDownloadLinkOfCalVideoRecordings?: typeof import("./getDownloadLinkOfCalVideoRecordings.handler").getDownloadLinkOfCalVideoRecordingsHandler;
   getMeetingInformation?: typeof import("./getMeetingInformation.handler").getMeetingInformationHandler;
+  getTranscriptsOfBooking?: typeof import("./getTranscriptsOfBooking.handler").getTranscriptsOfBookingHandler;
 };
 
 export const calVideoRouter = router({
@@ -35,5 +37,13 @@ export const calVideoRouter = router({
       const { getMeetingInformationHandler } = await import("./getMeetingInformation.handler");
 
       return getMeetingInformationHandler({ ctx, input });
+    }),
+
+  getTranscriptsOfBooking: authedProcedure
+    .input(ZGetTranscriptsOfBookingInputSchema)
+    .query(async ({ ctx, input }) => {
+      const { getTranscriptsOfBookingHandler } = await import("./getTranscriptsOfBooking.handler");
+
+      return getTranscriptsOfBookingHandler({ ctx, input });
     }),
 });
