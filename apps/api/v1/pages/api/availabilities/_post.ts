@@ -73,6 +73,18 @@ import {
  */
 async function postHandler(req: NextApiRequest) {
   const data = schemaAvailabilityCreateBodyParams.parse(req.body);
+  if (data.days) {
+    const invalidDays = data.days.filter((day) => !Number.isInteger(day) || day < 0 || day > 6);
+    if (invalidDays.length > 0) {
+      throw new HttpError({
+        statusCode: 400,
+        message: `Invalid days: ${invalidDays.join(", ")}. Days must be integers from 0 (Sunday) to 6 (Saturday).`,
+      });
+    }
+    if (new Set(data.days).size !== data.days.length) {
+      throw new HttpError({ statusCode: 400, message: "Days must not contain duplicates." });
+    }
+  }
   await checkPermissions(req);
   const availability = await prisma.availability.create({
     data,
