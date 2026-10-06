@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { BOOKER_NUMBER_OF_DAYS_TO_LOAD } from "@calcom/lib/constants";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { Icon } from "@calcom/ui/components/icon";
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
   isScheduleLoading: boolean;
 };
 export function HavingTroubleFindingTime(props: Props) {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   const [internalClick, setInternalClick] = useState(false);
 
   if (!props.visible) return null;

@@ -13,7 +13,7 @@ import type {
 } from "@calcom/features/eventtypes/components/BulkEditDefaultForEventsModal";
 import { BulkEditDefaultForEventsModal } from "@calcom/features/eventtypes/components/BulkEditDefaultForEventsModal";
 import { isDelegationCredential } from "@calcom/lib/delegationCredential/clientAndServer";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import type { AppCategories } from "@calcom/prisma/enums";
 import { type RouterOutputs } from "@calcom/trpc";
 import type { App } from "@calcom/types/App";
@@ -174,7 +174,7 @@ export const AppList = ({
     return appCards;
   });
 
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   return (
     <>
       <List className={listClassName}>
@@ -222,7 +222,7 @@ function ConnectOrDisconnectIntegrationMenuItem(props: {
   handleConnectDisconnectIntegrationMenuToggle: () => void;
 }) {
   const { type, credentialId, isGlobal, installed, handleDisconnect, teamId, app } = props;
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
 
   if (credentialId || type === "stripe_payment" || isGlobal) {
     return (

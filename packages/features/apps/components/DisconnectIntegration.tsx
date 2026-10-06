@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { isDelegationCredential } from "@calcom/lib/delegationCredential/clientAndServer";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { trpc } from "@calcom/trpc/react";
 import type { ButtonProps } from "@calcom/ui/components/button";
 import { DisconnectIntegrationComponent } from "@calcom/ui/components/disconnect-calendar-integration";
@@ -18,7 +18,7 @@ export default function DisconnectIntegration(props: {
   onSuccess?: () => void;
   buttonProps?: ButtonProps;
 }) {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   const { onSuccess, credentialId, teamId } = props;
   const [modalOpen, setModalOpen] = useState(false);
   const utils = trpc.useUtils();

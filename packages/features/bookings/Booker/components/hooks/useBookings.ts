@@ -16,7 +16,7 @@ import type { BookerEvent } from "@calcom/features/bookings/types";
 import { getFullName } from "@calcom/features/form-builder/utils";
 import { useBookingSuccessRedirect } from "@calcom/lib/bookingSuccessRedirect";
 import { ErrorCode } from "@calcom/lib/errorCodes";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { localStorage } from "@calcom/lib/webstorage";
 import { BookingStatus } from "@calcom/prisma/enums";
 import { bookingMetadataSchema } from "@calcom/prisma/zod-utils";
@@ -125,7 +125,7 @@ export const useBookings = ({
   const rescheduledBy = useBookerStore((state) => state.rescheduledBy);
   const bookingData = useBookerStore((state) => state.bookingData);
   const timeslot = useBookerStore((state) => state.selectedTimeslot);
-  const { t } = useLocale();
+  const { t } = useCalendarLocale();
   const bookingSuccessRedirect = useBookingSuccessRedirect();
   const bookerFormErrorRef = useRef<HTMLDivElement>(null);
 
