@@ -26,7 +26,7 @@ describe("checkForConflicts", () => {
       const result = checkForConflicts({
         ...createTestData("2023-01-01T09:00:00Z"),
         currentSeats,
-      });
+      }).conflict;
 
       expect(result).toBe(false);
     });
@@ -34,7 +34,7 @@ describe("checkForConflicts", () => {
 
   describe("busy time overlap scenarios", () => {
     it("should return false when no busy periods", () => {
-      const result = checkForConflicts(createTestData("2023-01-01T09:00:00Z"));
+      const result = checkForConflicts(createTestData("2023-01-01T09:00:00Z")).conflict;
       expect(result).toBe(false);
     });
 
@@ -47,7 +47,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T08:30:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(false);
     });
 
@@ -60,7 +60,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T10:30:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(false);
     });
 
@@ -73,7 +73,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T09:30:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -86,7 +86,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T09:30:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -100,7 +100,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T09:45:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -113,7 +113,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T10:00:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -130,7 +130,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T11:00:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(false);
     });
 
@@ -147,7 +147,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T10:00:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -160,7 +160,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T09:30:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(false);
     });
   });
@@ -170,7 +170,7 @@ describe("checkForConflicts", () => {
       const result = checkForConflicts({
         ...createTestData("2023-01-01T09:00:00Z"),
         busy: [],
-      });
+      }).conflict;
       expect(result).toBe(false);
     });
 
@@ -183,7 +183,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T09:30:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(false);
     });
 
@@ -196,7 +196,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T09:30:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(false);
     });
 
@@ -209,7 +209,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T09:15:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -222,7 +222,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T09:45:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -236,7 +236,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T09:01:30Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -250,7 +250,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T13:00:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
   });
@@ -269,7 +269,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T11:00:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -286,7 +286,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T11:15:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -307,7 +307,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T12:00:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -324,7 +324,7 @@ describe("checkForConflicts", () => {
       const result = checkForConflicts({
         ...createTestData("2023-01-01T07:00:00Z"),
         busy: busyPeriods,
-      });
+      }).conflict;
       expect(result).toBe(false);
     });
 
@@ -341,7 +341,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T10:00:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
   });
@@ -367,7 +367,7 @@ describe("checkForConflicts", () => {
           },
         ],
         currentSeats,
-      });
+      }).conflict;
       expect(result).toBe(false);
     });
 
@@ -390,7 +390,7 @@ describe("checkForConflicts", () => {
           },
         ],
         currentSeats,
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -419,7 +419,7 @@ describe("checkForConflicts", () => {
           },
         ],
         currentSeats,
-      });
+      }).conflict;
       expect(result).toBe(false);
     });
 
@@ -434,7 +434,7 @@ describe("checkForConflicts", () => {
           },
         ],
         currentSeats: [],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
   });
@@ -450,7 +450,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T14:45:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
 
@@ -464,7 +464,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-02T00:30:00Z").toDate(),
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
   });
@@ -494,7 +494,7 @@ describe("checkForConflicts", () => {
       const result = checkForConflicts({
         ...createTestData("2023-01-01T07:00:00Z"),
         busy: busyPeriods,
-      });
+      }).conflict;
       const endTime = performance.now();
 
       expect(result).toBe(false);
@@ -510,7 +510,7 @@ describe("checkForConflicts", () => {
             end: dayjs.utc("2023-01-01T09:15:00Z").toDate(), // Zero duration
           },
         ],
-      });
+      }).conflict;
       expect(result).toBe(true);
     });
   });
