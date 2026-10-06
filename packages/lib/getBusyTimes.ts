@@ -181,8 +181,7 @@ const _getBusyTimes = async (params: {
     const startConnectedCalendarsGet = performance.now();
     const calendarBusyTimes = await getBusyCalendarTimes(
       credentials,
-      startTime,
-      endTime,
+      { start: startTime, end: endTime },
       selectedCalendars,
       shouldServeCache
     );
