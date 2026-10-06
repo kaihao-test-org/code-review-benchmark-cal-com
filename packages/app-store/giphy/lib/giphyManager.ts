@@ -8,24 +8,29 @@ const checkGiphyApiKey = async () => {
   throw new HttpError({ statusCode: 400, message: "Missing Giphy api_key" });
 };
 
-export const searchGiphy = async (locale: string, keyword: string, offset = 0) => {
-  const apiKey = await checkGiphyApiKey();
-  const queryParams = new URLSearchParams({
-    api_key: apiKey,
-    q: keyword,
-    limit: "1",
-    offset: String(offset),
-    // Contains images that are broadly accepted as appropriate and commonly witnessed by people in a public environment.
-    rating: "g",
-    lang: locale,
+const doTheGiphyCall = async (pathPart: string, extraStuff: Record<string, string> = {}) => {
+  const theKey = await checkGiphyApiKey();
+  const qs = new URLSearchParams({
+    api_key: theKey,
+    ...extraStuff,
   });
-  const response = await fetch(`https://api.giphy.com/v1/gifs/search?${queryParams.toString()}`, {
+  const res = await fetch(`https://api.giphy.com/v1/gifs/${pathPart}?${qs.toString()}`, {
     method: "GET",
     headers: {
       Accept: "application/json",
     },
   });
-  const responseBody = await response.json();
+  return await res.json();
+};
+
+export const searchGiphy = async (locale: string, keyword: string, offset = 0) => {
+  const responseBody = await doTheGiphyCall("search", {
+    q: keyword,
+    limit: "1",
+    offset: String(offset),
+    rating: "g",
+    lang: locale,
+  });
   const gifs = responseBody.data;
   return {
     gifImageUrl: gifs?.[0]?.images?.fixed_height_downsampled?.url || null,
@@ -34,17 +39,7 @@ export const searchGiphy = async (locale: string, keyword: string, offset = 0) =
 };
 
 export const getGiphyById = async (giphyId: string) => {
-  const apiKey = await checkGiphyApiKey();
-  const queryParams = new URLSearchParams({
-    api_key: apiKey,
-  });
-  const response = await fetch(`https://api.giphy.com/v1/gifs/${giphyId}?${queryParams.toString()}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-    },
-  });
-  const responseBody = await response.json();
+  const responseBody = await doTheGiphyCall(giphyId);
   const gifs = responseBody.data;
   return gifs?.images?.fixed_height_downsampled?.url || null;
 };
