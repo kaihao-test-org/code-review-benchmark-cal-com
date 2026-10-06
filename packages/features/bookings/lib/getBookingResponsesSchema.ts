@@ -3,8 +3,11 @@ import z from "zod";
 
 import type { ALL_VIEWS } from "@calcom/features/form-builder/schema";
 import { dbReadResponseSchema, fieldTypesSchemaMap } from "@calcom/features/form-builder/schema";
+import { extractBaseEmail } from "@calcom/lib/extract-base-email";
 import type { eventTypeBookingFields } from "@calcom/prisma/zod-utils";
 import { bookingResponses, emailSchemaRefinement } from "@calcom/prisma/zod-utils";
+
+import { getEmailDomainViolation, parseEmailDomainList } from "./emailDomainRestrictions";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type View = ALL_VIEWS | (string & {});
@@ -183,28 +186,15 @@ function preprocess<T extends z.ZodType>({
               });
             }
 
-            // validate the excluded emails
-            const bookerEmail = value;
-            const excludedEmails =
-              bookingField.excludeEmails?.split(",").map((domain) => domain.trim()) || [];
-
-            const match = excludedEmails.find((email) => bookerEmail.includes(email));
-            if (match) {
+            const emailDomainViolation = getEmailDomainViolation({
+              email: value,
+              excludedDomains: parseEmailDomainList(bookingField.excludeEmails),
+              requiredDomains: parseEmailDomainList(bookingField.requireEmails),
+            });
+            if (emailDomainViolation) {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: m("exclude_emails_match_found_error_message"),
-              });
-            }
-            const requiredEmails =
-              bookingField.requireEmails
-                ?.split(",")
-                .map((domain) => domain.trim())
-                .filter(Boolean) || [];
-            const requiredEmailsMatch = requiredEmails.find((email) => bookerEmail.includes(email));
-            if (requiredEmails.length > 0 && !requiredEmailsMatch) {
-              ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: m("require_emails_no_match_found_error_message"),
+                message: m(emailDomainViolation),
               });
             }
           }
