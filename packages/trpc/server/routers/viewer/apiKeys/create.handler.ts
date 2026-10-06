@@ -7,6 +7,7 @@ import { MembershipRole } from "@calcom/prisma/enums";
 import type { TrpcSessionUser } from "../../../types";
 import { checkPermissions } from "./_auth-middleware";
 import type { TCreateInputSchema } from "./create.schema";
+import { assertApiKeyExpiryIsInFuture } from "./util";
 
 type CreateHandlerOptions = {
   ctx: {
@@ -24,6 +25,10 @@ export const createHandler = async ({ ctx, input }: CreateHandlerOptions) => {
 
   /** Only admin or owner can create apiKeys of team (if teamId is passed) */
   await checkPermissions({ userId, teamId, role: { in: [MembershipRole.OWNER, MembershipRole.ADMIN] } });
+
+  if (!neverExpires) {
+    assertApiKeyExpiryIsInFuture(rest.expiresAt);
+  }
 
   await prisma.apiKey.create({
     data: {
