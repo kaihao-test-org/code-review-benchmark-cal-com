@@ -15,6 +15,7 @@ import { Form } from "@calcom/ui/components/form";
 import { showToast } from "@calcom/ui/components/toast";
 
 import DatePicker from "../../calendars/DatePicker";
+import { buildDateOverrideRanges } from "../lib/buildDateOverrideRanges";
 import type { TimeRange } from "./Schedule";
 import { DayRanges } from "./Schedule";
 
@@ -104,33 +105,15 @@ const DateOverrideForm = ({
     <Form
       form={form}
       handleSubmit={(values) => {
-        const datesInRanges: TimeRange[] = [];
-
         if (selectedDates.length === 0) return;
 
-        if (datesUnavailable) {
-          selectedDates.map((date) => {
-            datesInRanges.push({
-              start: date.utc(true).startOf("day").toDate(),
-              end: date.utc(true).startOf("day").toDate(),
-            });
-          });
-        } else {
-          selectedDates.map((date) => {
-            values.range.map((item) => {
-              datesInRanges.push({
-                start: date
-                  .hour(item.start.getUTCHours())
-                  .minute(item.start.getUTCMinutes())
-                  .utc(true)
-                  .toDate(),
-                end: date.hour(item.end.getUTCHours()).minute(item.end.getUTCMinutes()).utc(true).toDate(),
-              });
-            });
-          });
-        }
-
-        onChange(datesInRanges);
+        onChange(
+          buildDateOverrideRanges({
+            selectedDates,
+            ranges: values.range,
+            unavailable: !!datesUnavailable,
+          })
+        );
         setSelectedDates([]);
       }}
       className="p-6 sm:flex sm:p-0 xl:flex-row">
