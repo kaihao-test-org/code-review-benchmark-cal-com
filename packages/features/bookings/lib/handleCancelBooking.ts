@@ -79,6 +79,8 @@ async function handler(input: CancelBookingInput) {
     cancelSubsequentBookings,
     internalNote,
   } = bookingCancelInput.parse(body);
+  const normalizedCancellationReason = cancellationReason?.trim() || undefined;
+  console.log("normalizedCancellationReason", normalizedCancellationReason);
   const bookingToDelete = await getBookingToDelete(id, uid);
   const {
     userId,
@@ -113,7 +115,7 @@ async function handler(input: CancelBookingInput) {
     });
   }
 
-  if (!platformClientId && !cancellationReason?.trim() && bookingToDelete.userId == userId) {
+  if (!platformClientId && !normalizedCancellationReason && bookingToDelete.userId == userId) {
     throw new HttpError({
       statusCode: 400,
       message: "Cancellation reason is required when you are the host",
@@ -266,7 +268,7 @@ async function handler(input: CancelBookingInput) {
       : bookingToDelete?.user.destinationCalendar
       ? [bookingToDelete?.user.destinationCalendar]
       : [],
-    cancellationReason: cancellationReason,
+    cancellationReason: normalizedCancellationReason,
     ...(teamMembers &&
       teamId && {
         team: {
@@ -379,7 +381,7 @@ async function handler(input: CancelBookingInput) {
       },
       data: {
         status: BookingStatus.CANCELLED,
-        cancellationReason: cancellationReason,
+        cancellationReason: normalizedCancellationReason,
         cancelledBy: cancelledBy,
       },
     });
@@ -422,7 +424,7 @@ async function handler(input: CancelBookingInput) {
       where,
       data: {
         status: BookingStatus.CANCELLED,
-        cancellationReason: cancellationReason,
+        cancellationReason: normalizedCancellationReason,
         cancelledBy: cancelledBy,
         // Assume that canceling the booking is the last action
         iCalSequence: evt.iCalSequence || 100,
