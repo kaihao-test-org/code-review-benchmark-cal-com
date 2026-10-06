@@ -3,11 +3,13 @@ import publicProcedure from "../../../procedures/publicProcedure";
 import { router } from "../../../trpc";
 import { ZAddGuestsInputSchema } from "./addGuests.schema";
 import { ZConfirmInputSchema } from "./confirm.schema";
+import { ZCountAttendeeBookingsInputSchema } from "./countAttendeeBookings.schema";
 import { ZEditLocationInputSchema } from "./editLocation.schema";
 import { ZFindInputSchema } from "./find.schema";
 import { ZGetInputSchema } from "./get.schema";
 import { ZGetBookingAttendeesInputSchema } from "./getBookingAttendees.schema";
 import { ZInstantBookingInputSchema } from "./getInstantBookingLocation.schema";
+import { ZListUpcomingAttendeesInputSchema } from "./listUpcomingAttendees.schema";
 import { ZRequestRescheduleInputSchema } from "./requestReschedule.schema";
 import { bookingsProcedure } from "./util";
 
@@ -20,6 +22,8 @@ type BookingsRouterHandlerCache = {
   getBookingAttendees?: typeof import("./getBookingAttendees.handler").getBookingAttendeesHandler;
   find?: typeof import("./find.handler").getHandler;
   getInstantBookingLocation?: typeof import("./getInstantBookingLocation.handler").getHandler;
+  listUpcomingAttendees?: typeof import("./listUpcomingAttendees.handler").listUpcomingAttendeesHandler;
+  countAttendeeBookings?: typeof import("./countAttendeeBookings.handler").countAttendeeBookingsHandler;
 };
 
 export const bookingsRouter = router({
@@ -94,6 +98,28 @@ export const bookingsRouter = router({
       const { getHandler } = await import("./getInstantBookingLocation.handler");
 
       return getHandler({
+        ctx,
+        input,
+      });
+    }),
+
+  listUpcomingAttendees: authedProcedure
+    .input(ZListUpcomingAttendeesInputSchema)
+    .query(async ({ input, ctx }) => {
+      const { listUpcomingAttendeesHandler } = await import("./listUpcomingAttendees.handler");
+
+      return listUpcomingAttendeesHandler({
+        ctx,
+        input,
+      });
+    }),
+
+  countAttendeeBookings: authedProcedure
+    .input(ZCountAttendeeBookingsInputSchema)
+    .query(async ({ input, ctx }) => {
+      const { countAttendeeBookingsHandler } = await import("./countAttendeeBookings.handler");
+
+      return countAttendeeBookingsHandler({
         ctx,
         input,
       });
