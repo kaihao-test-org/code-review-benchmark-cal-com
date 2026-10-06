@@ -9,6 +9,7 @@ import { RoleType, MembershipRole } from "@calcom/prisma/enums";
 
 import authedProcedure from "../../../procedures/authedProcedure";
 import { router } from "../../../trpc";
+import { ZGetRoleInputSchema } from "./getRole.schema";
 
 // Create a Zod schema for PermissionString that validates the format
 const permissionStringSchema = z.custom<PermissionString>((val) => {
@@ -216,4 +217,10 @@ export const permissionsRouter = router({
       const roleService = new RoleService();
       return roleService.getTeamRoles(input.teamId);
     }),
+
+  getRole: authedProcedure.input(ZGetRoleInputSchema).query(async ({ ctx, input }) => {
+    const { getRoleHandler } = await import("./getRole.handler");
+
+    return getRoleHandler({ ctx, input });
+  }),
 });
