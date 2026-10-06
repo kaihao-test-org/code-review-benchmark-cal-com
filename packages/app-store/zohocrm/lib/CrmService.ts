@@ -10,7 +10,7 @@ import type { CredentialPayload } from "@calcom/types/Credential";
 import type { CRM, Contact, ContactCreateInput } from "@calcom/types/CrmService";
 
 import getAppKeysFromSlug from "../../_utils/getAppKeysFromSlug";
-import refreshOAuthTokens from "../../_utils/oauth/refreshOAuthTokens";
+import refreshIntegrationTokens from "../../_utils/oauth/integrationTokenRefresh";
 
 export type ZohoToken = {
   scope: string;
@@ -211,8 +211,8 @@ export default class ZohoCrmCrmService implements CRM {
           client_secret: this.client_secret,
           refresh_token: credentialKey.refresh_token,
         };
-        const zohoCrmTokenInfo = await refreshOAuthTokens(
-          async () =>
+        const zohoCrmTokenInfo = await refreshIntegrationTokens(
+          async () => ({ data: (await (async () =>
             await axios({
               method: "post",
               url: url,
@@ -220,9 +220,10 @@ export default class ZohoCrmCrmService implements CRM {
               headers: {
                 "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
               },
-            }),
+            }))()).data }),
           "zohocrm",
-          credential.userId
+          { userId: credential.userId },
+          async (response) => ({ data: await response.json() })
         );
         if (!zohoCrmTokenInfo.data.error) {
           // set expiry date as offset from current time.
