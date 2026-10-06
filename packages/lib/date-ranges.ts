@@ -353,3 +353,24 @@ export function mergeOverlappingRanges(ranges: { start: Date; end: Date }[]): { 
   }
   return mergedRanges;
 }
+
+function toBoundaryEvents(ranges: DateRange[]): [number, 1 | -1][] {
+  return ranges
+    .flatMap((range): [number, 1 | -1][] => [
+      [range.start.valueOf(), 1],
+      [range.end.valueOf(), -1],
+    ])
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+}
+
+export function getMaxConcurrentRanges(ranges: DateRange[]): number {
+  let concurrent = 0;
+  let maxConcurrent = 0;
+
+  for (const [, delta] of toBoundaryEvents(ranges)) {
+    concurrent += delta;
+    maxConcurrent = Math.max(maxConcurrent, concurrent);
+  }
+
+  return maxConcurrent;
+}
