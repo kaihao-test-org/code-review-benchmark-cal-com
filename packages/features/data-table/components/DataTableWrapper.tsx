@@ -6,7 +6,7 @@ import { noop } from "lodash";
 import { useEffect, useRef } from "react";
 
 import { useColumnFilters } from "../hooks/useColumnFilters";
-import { useDataTable } from "../hooks/useDataTable";
+import { useTableState } from "../hooks/useTableState";
 import { useFetchMoreOnBottomReached } from "../hooks/useFetchMoreOnBottomReached";
 import type { DataTablePropsFromWrapper } from "./DataTable";
 import { DataTable } from "./DataTable";
@@ -73,7 +73,7 @@ export function DataTableWrapper<TData>({
     isFetching: paginationMode === "infinite" ? isFetching : false,
     enabled: paginationMode === "infinite",
   });
-  const { sorting, setSorting, columnVisibility, setColumnVisibility } = useDataTable();
+  const { sorting, setSorting, columnVisibility, setColumnVisibility } = useTableState().state;
   const columnFilters = useColumnFilters();
 
   useEffect(() => {

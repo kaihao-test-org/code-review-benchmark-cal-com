@@ -6,7 +6,7 @@ import { useLocale } from "@calcom/lib/hooks/useLocale";
 import { Button } from "@calcom/ui/components/button";
 import { Form, Select, NumberInput } from "@calcom/ui/components/form";
 
-import { useFilterValue, useDataTable } from "../../hooks";
+import { useFilterValue, useTableState } from "../../hooks";
 import type { FilterableColumn } from "../../lib/types";
 import { ZNumberFilterValue, ColumnFilterType } from "../../lib/types";
 import { numberFilterOperatorOptions } from "./utils";
@@ -18,7 +18,7 @@ export type NumberFilterOptionsProps = {
 export function NumberFilterOptions({ column }: NumberFilterOptionsProps) {
   const { t } = useLocale();
   const filterValue = useFilterValue(column.id, ZNumberFilterValue);
-  const { updateFilter, removeFilter } = useDataTable();
+  const { updateFilter, removeFilter } = useTableState().state;
 
   const form = useForm({
     defaultValues: {

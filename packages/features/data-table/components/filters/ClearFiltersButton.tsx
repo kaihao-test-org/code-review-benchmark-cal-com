@@ -2,11 +2,11 @@ import { useLocale } from "@calcom/lib/hooks/useLocale";
 import { Button } from "@calcom/ui/components/button";
 import { Tooltip } from "@calcom/ui/components/tooltip";
 
-import { useDataTable } from "../../hooks/useDataTable";
+import { useTableState } from "../../hooks/useTableState";
 
 export const ClearFiltersButton = ({ exclude }: { exclude?: string[] }) => {
   const { t } = useLocale();
-  const { activeFilters, clearAll } = useDataTable();
+  const { activeFilters, clearAll } = useTableState().state;
 
   if (!activeFilters?.length || (exclude && activeFilters.every((filter) => exclude.includes(filter.f)))) {
     return null;

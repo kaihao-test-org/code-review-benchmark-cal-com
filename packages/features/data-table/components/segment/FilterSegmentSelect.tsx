@@ -15,7 +15,7 @@ import {
 } from "@calcom/ui/components/dropdown";
 import { Icon, type IconName } from "@calcom/ui/components/icon";
 
-import { useDataTable } from "../../hooks";
+import { useTableState } from "../../hooks";
 import type { FilterSegmentOutput } from "../../lib/types";
 import { DeleteSegmentDialog } from "./DeleteSegmentDialog";
 import { DuplicateSegmentDialog } from "./DuplicateSegmentDialog";
@@ -31,7 +31,7 @@ type SubmenuItem = {
 
 export function FilterSegmentSelect() {
   const { t } = useLocale();
-  const { segments, selectedSegment, segmentId, setSegmentId, isSegmentEnabled } = useDataTable();
+  const { segments, selectedSegment, segmentId, setSegmentId, isSegmentEnabled } = useTableState().state;
   const [segmentToRename, setSegmentToRename] = useState<FilterSegmentOutput | undefined>();
   const [segmentToDuplicate, setSegmentToDuplicate] = useState<FilterSegmentOutput | undefined>();
   const [segmentToDelete, setSegmentToDelete] = useState<FilterSegmentOutput | undefined>();

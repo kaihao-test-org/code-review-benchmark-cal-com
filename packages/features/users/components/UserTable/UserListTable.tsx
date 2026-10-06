@@ -18,7 +18,7 @@ import {
   useColumnFilters,
   ColumnFilterType,
   convertFacetedValuesToMap,
-  useDataTable,
+  useTableState,
 } from "@calcom/features/data-table";
 import { useSegments } from "@calcom/features/data-table/hooks/useSegments";
 import { useOrgBranding } from "@calcom/features/ee/organizations/context/provider";
@@ -146,7 +146,7 @@ function UserListTableContent({ org, attributes, teams, facetedTeamValues }: Use
 
   const columnFilters = useColumnFilters();
 
-  const { limit, offset, searchTerm, ctaContainerRef } = useDataTable();
+  const { limit, offset, searchTerm, ctaContainerRef } = useTableState().state;
 
   const { data, isPending } = trpc.viewer.organizations.listMembers.useQuery(
     {

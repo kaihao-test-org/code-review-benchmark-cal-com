@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader } from "@calcom/ui/co
 import { Form, TextField } from "@calcom/ui/components/form";
 import { showToast } from "@calcom/ui/components/toast";
 
-import { useDataTable } from "../../hooks";
+import { useTableState } from "../../hooks";
 import type { FilterSegmentOutput } from "../../lib/types";
 
 type FormValues = {
@@ -29,7 +29,7 @@ export function DuplicateSegmentDialog({
       name: "",
     },
   });
-  const { setSegmentId } = useDataTable();
+  const { setSegmentId } = useTableState().state;
   const utils = trpc.useUtils();
   const session = useSession();
   const isAdminOrOwner = checkAdminOrOwner(session.data?.user?.org?.role);

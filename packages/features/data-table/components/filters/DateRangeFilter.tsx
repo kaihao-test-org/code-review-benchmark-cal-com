@@ -18,7 +18,7 @@ import { DateRangePicker } from "@calcom/ui/components/form";
 import { Icon } from "@calcom/ui/components/icon";
 import { Popover, PopoverContent, PopoverTrigger } from "@calcom/ui/components/popover";
 
-import { useDataTable, useFilterValue } from "../../hooks";
+import { useTableState, useFilterValue } from "../../hooks";
 import {
   CUSTOM_PRESET,
   CUSTOM_PRESET_VALUE,
@@ -48,7 +48,7 @@ export const DateRangeFilter = ({
 }: DateRangeFilterProps) => {
   const { open, onOpenChange } = useFilterPopoverOpen(column.id);
   const filterValue = useFilterValue(column.id, ZDateRangeFilterValue);
-  const { updateFilter, removeFilter } = useDataTable();
+  const { updateFilter, removeFilter } = useTableState().state;
   const range = options?.range ?? "past";
   const endOfDay = options?.endOfDay ?? false;
   const forceCustom = range === "custom";

@@ -10,7 +10,7 @@ import classNames from "@calcom/ui/classNames";
 import { Button, type ButtonProps } from "@calcom/ui/components/button";
 import { Input } from "@calcom/ui/components/form";
 
-import { useColumnFilters, useDataTable } from "../hooks";
+import { useColumnFilters, useTableState } from "../hooks";
 
 interface DataTableToolbarProps extends ComponentPropsWithoutRef<"div"> {
   children: React.ReactNode;
@@ -35,7 +35,7 @@ interface SearchBarProps {
 }
 
 function SearchBarComponent({ className }: SearchBarProps, ref: Ref<HTMLInputElement>) {
-  const { searchTerm, setSearchTerm } = useDataTable();
+  const { searchTerm, setSearchTerm } = useTableState().state;
   const { t } = useLocale();
   const [localValue, setLocalValue] = useState(searchTerm);
 
