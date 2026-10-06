@@ -2,6 +2,7 @@ import prisma from "@calcom/prisma";
 
 import type { TrpcSessionUser } from "../../../types";
 import type { TEditInputSchema } from "./edit.schema";
+import { assertApiKeyExpiryIsInFuture } from "./util";
 
 type EditOptions = {
   ctx: {
@@ -12,6 +13,8 @@ type EditOptions = {
 
 export const editHandler = async ({ ctx, input }: EditOptions) => {
   const { id, ...data } = input;
+
+  assertApiKeyExpiryIsInFuture(data.expiresAt);
 
   const {
     apiKeys: [updatedApiKey],
