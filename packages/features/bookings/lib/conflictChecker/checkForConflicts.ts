@@ -7,7 +7,7 @@ import type { BufferedBusyTime } from "@calcom/types/BufferedBusyTime";
 type BufferedBusyTimes = BufferedBusyTime[];
 
 // if true, there are conflicts.
-export function checkForConflicts({
+function evaluateBookingConflict({
   busy,
   time,
   eventLength,
@@ -47,4 +47,10 @@ export function checkForConflicts({
   }
 
   return false;
+}
+
+export function checkForConflicts(input: Parameters<typeof evaluateBookingConflict>[0]): {
+  conflict: boolean;
+} {
+  return { conflict: evaluateBookingConflict(input) };
 }

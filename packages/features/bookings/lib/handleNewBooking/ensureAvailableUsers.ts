@@ -237,7 +237,7 @@ const _ensureAvailableUsers = async (
         busy: bufferedBusyTimes,
         time: startDateTimeUtc,
         eventLength: duration,
-      });
+      }).conflict;
       if (!foundConflict) {
         availableUsers.push(user);
       }
