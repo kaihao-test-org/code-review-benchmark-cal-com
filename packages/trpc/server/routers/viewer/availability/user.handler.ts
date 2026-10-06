@@ -1,4 +1,4 @@
-import { getUserAvailability } from "@calcom/lib/getUserAvailability";
+import { getAvailabilitySnapshot } from "@calcom/lib/getUserAvailability";
 
 import type { TrpcSessionUser } from "../../../types";
 import type { TUserInputSchema } from "./user.schema";
@@ -11,7 +11,7 @@ type UserOptions = {
 };
 
 export const userHandler = async ({ input }: UserOptions) => {
-  return getUserAvailability(
+  return getAvailabilitySnapshot(
     { returnDateOverrides: true, bypassBusyCalendarTimes: false, ...input },
     undefined
   );
