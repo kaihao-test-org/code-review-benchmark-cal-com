@@ -814,6 +814,24 @@ export class EventTypeRepository {
     };
   }
 
+  async findAllByTeamIdWithHosts({ teamId }: { teamId: number }) {
+    return await this.prismaClient.eventType.findMany({
+      where: {
+        teamId,
+      },
+      include: {
+        hosts: {
+          include: {
+            user: true,
+          },
+        },
+      },
+      orderBy: {
+        position: "desc",
+      },
+    });
+  }
+
   async findAllByTeamIdIncludeManagedEventTypes({ teamId }: { teamId?: number }) {
     return await this.prismaClient.eventType.findMany({
       where: {
