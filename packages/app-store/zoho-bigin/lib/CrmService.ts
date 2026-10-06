@@ -90,7 +90,7 @@ export default class BiginCrmService implements CRM {
           },
         }),
       "zoho-bigin",
-      credentialId
+      { userId: credentialId }
     );
 
     if (!tokenInfo.data.error) {

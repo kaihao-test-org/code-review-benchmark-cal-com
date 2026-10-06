@@ -149,7 +149,7 @@ export default class HubspotCalendarService implements CRM {
               refreshToken
             ),
           "hubspot",
-          credential.userId
+          { userId: credential.userId }
         );
         // set expiry date as offset from current time.
         hubspotRefreshToken.expiryDate = Math.round(Date.now() + hubspotRefreshToken.expiresIn * 1000);

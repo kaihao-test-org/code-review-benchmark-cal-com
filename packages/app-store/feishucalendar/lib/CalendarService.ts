@@ -79,7 +79,7 @@ export default class FeishuCalendarService implements Calendar {
             }),
           }),
         "feishu-calendar",
-        credential.userId
+        { userId: credential.userId }
       );
 
       const data = await handleFeishuError<RefreshTokenResp>(resp, this.log);
