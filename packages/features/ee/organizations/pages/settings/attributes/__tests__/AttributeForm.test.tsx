@@ -8,11 +8,20 @@ import { Button } from "@calcom/ui/components/button";
 
 import { AttributeForm } from "../AttributesForm";
 
-vi.mock("@calcom/lib/hooks/useLocale", () => ({
-  useLocale: vi.fn(() => ({
-    t: (key: string) => key,
-  })),
-}));
+vi.mock("@calcom/lib/hooks/useLocale", () => {
+  const localeModuleMock = {
+    useLocale: vi.fn(() => ({
+      t: (key: string) => key,
+    })),
+  };
+  return {
+    ...localeModuleMock,
+    useCalendarLocale: () => {
+      const { t, ...locale } = localeModuleMock.useLocale();
+      return { ...locale, translate: t };
+    },
+  };
+});
 
 vi.mock("next/navigation", async (importOriginal) => {
   const actual = await importOriginal<typeof import("next/navigation")>();

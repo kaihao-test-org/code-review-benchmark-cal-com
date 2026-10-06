@@ -78,11 +78,20 @@ vi.mock("@calcom/trpc", () => ({
 }));
 
 // Mock useLocale hook
-vi.mock("@calcom/lib/hooks/useLocale", () => ({
-  useLocale: () => ({
-    t: (key: string) => key,
-  }),
-}));
+vi.mock("@calcom/lib/hooks/useLocale", () => {
+  const localeModuleMock = {
+    useLocale: () => ({
+      t: (key: string) => key,
+    }),
+  };
+  return {
+    ...localeModuleMock,
+    useCalendarLocale: () => {
+      const { t, ...locale } = localeModuleMock.useLocale();
+      return { ...locale, translate: t };
+    },
+  };
+});
 
 describe("Segment", () => {
   const defaultProps = {

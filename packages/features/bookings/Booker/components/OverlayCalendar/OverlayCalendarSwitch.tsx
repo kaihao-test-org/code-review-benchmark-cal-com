@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { Switch } from "@calcom/ui/components/form";
 import { Button } from "@calcom/ui/components/button";
 import classNames from "@calcom/ui/classNames";
@@ -15,7 +15,7 @@ interface OverlayCalendarSwitchProps {
 }
 
 export function OverlayCalendarSwitch({ enabled, hasSession, onStateChange }: OverlayCalendarSwitchProps) {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   const setContinueWithProvider = useOverlayCalendarStore((state) => state.setContinueWithProviderModal);
   const setCalendarSettingsOverlay = useOverlayCalendarStore(
     (state) => state.setCalendarSettingsOverlayModal

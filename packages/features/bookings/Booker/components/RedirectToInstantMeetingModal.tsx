@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import dayjs from "@calcom/dayjs";
 import { Dialog } from "@calcom/features/components/controlled-dialog";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import { Button } from "@calcom/ui/components/button";
 import { DialogContent } from "@calcom/ui/components/dialog";
 
@@ -26,7 +26,7 @@ export const RedirectToInstantMeetingModal = ({
   instantVideoMeetingUrl?: string;
   orgName?: string | null;
 }) => {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining());
   const [hasInstantMeetingTokenExpired, setHasInstantMeetingTokenExpired] = useState(false);
   const router = useRouter();

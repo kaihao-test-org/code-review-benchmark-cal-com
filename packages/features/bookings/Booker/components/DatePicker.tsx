@@ -6,7 +6,7 @@ import type { DatePickerClassNames } from "@calcom/features/bookings/Booker/type
 import { DatePicker as DatePickerComponent } from "@calcom/features/calendars/DatePicker";
 import { useNonEmptyScheduleDays } from "@calcom/features/schedules/lib/use-schedule/useNonEmptyScheduleDays";
 import { weekdayToWeekIndex } from "@calcom/lib/dayjs";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import type { User } from "@calcom/prisma/client";
 import type { PeriodData } from "@calcom/types/Event";
 
@@ -73,7 +73,7 @@ export const DatePicker = ({
   classNames?: DatePickerClassNames;
   scrollToTimeSlots?: () => void;
 }) => {
-  const { i18n } = useLocale();
+  const { i18n } = useCalendarLocale();
   const [month, selectedDate] = useBookerStore((state) => [state.month, state.selectedDate], shallow);
 
   const [setSelectedDate, setMonth, setDayCount] = useBookerStore(

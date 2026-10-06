@@ -3,7 +3,7 @@ import { Fragment } from "react";
 
 import { useIsPlatform } from "@calcom/atoms/hooks/useIsPlatform";
 import { Dialog } from "@calcom/features/components/controlled-dialog";
-import { useLocale } from "@calcom/lib/hooks/useLocale";
+import { useCalendarLocale } from "@calcom/lib/hooks/useLocale";
 import classNames from "@calcom/ui/classNames";
 import { Alert } from "@calcom/ui/components/alert";
 import { DialogContent, DialogClose } from "@calcom/ui/components/dialog";
@@ -47,7 +47,7 @@ export function OverlayCalendarSettingsModal({
   onToggleConnectedCalendar,
   checkIsCalendarToggled,
 }: IOverlayCalendarSettingsModalProps) {
-  const { t } = useLocale();
+  const { translate: t } = useCalendarLocale();
   const isPlatform = useIsPlatform();
 
   return (
