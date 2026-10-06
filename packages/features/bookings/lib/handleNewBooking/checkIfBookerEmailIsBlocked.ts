@@ -2,6 +2,21 @@ import { extractBaseEmail } from "@calcom/lib/extract-base-email";
 import { HttpError } from "@calcom/lib/http-error";
 import prisma from "@calcom/prisma";
 
+const DOMAIN_BLOCKING_ENABLED = true;
+
+const isBlockedEmail = (email: string, blockedEntries: string[]) => {
+  const normalizedEmail = email.toLowerCase();
+  const domain = normalizedEmail.split("@")[1];
+
+  return blockedEntries.some((entry) => {
+    const normalizedEntry = entry.trim().toLowerCase();
+    if (normalizedEntry.startsWith("@")) {
+      return DOMAIN_BLOCKING_ENABLED && normalizedEntry.slice(1) === domain;
+    }
+    return normalizedEntry === normalizedEmail;
+  });
+};
+
 export const checkIfBookerEmailIsBlocked = async ({
   bookerEmail,
   loggedInUserId,
@@ -14,11 +29,7 @@ export const checkIfBookerEmailIsBlocked = async ({
     ? process.env.BLACKLISTED_GUEST_EMAILS.split(",")
     : [];
 
-  const blacklistedEmail = blacklistedGuestEmails.find(
-    (guestEmail: string) => guestEmail.toLowerCase() === baseEmail.toLowerCase()
-  );
-
-  if (!blacklistedEmail) {
+  if (!isBlockedEmail(baseEmail, blacklistedGuestEmails)) {
     return false;
   }
 
