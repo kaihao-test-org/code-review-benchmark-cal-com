@@ -74,7 +74,7 @@ const webexAuth = (credential: CredentialPayload) => {
           }),
         }),
       "webex",
-      credential.userId
+      { userId: credential.userId }
     );
 
     const responseBody = await handleWebexResponse(response, credential.id);

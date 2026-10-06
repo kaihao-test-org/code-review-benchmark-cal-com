@@ -89,7 +89,7 @@ export default class DubService implements AnalyticsService {
           return await response.json();
         },
         "dub",
-        this.credential.userId
+        { userId: this.credential.userId }
       );
 
       newToken.expiry_date = Date.now() + newToken.expires_in * 1000;
