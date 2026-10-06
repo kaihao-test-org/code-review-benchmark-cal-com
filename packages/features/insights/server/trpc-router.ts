@@ -20,6 +20,8 @@ import { router } from "@calcom/trpc/server/trpc";
 import { TRPCError } from "@trpc/server";
 
 import { EventsInsights, type GetDateRangesParams } from "./events";
+import { getRecentBookings } from "./recent-bookings";
+import { getRepeatAttendees } from "./repeat-attendees";
 import { RoutingEventsInsights } from "./routing-events";
 import { VirtualQueuesInsights } from "./virtual-queues";
 
@@ -1720,6 +1722,12 @@ export const insightsRouter = router({
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
     }),
+  repeatAttendees: authedProcedure.query(async ({ ctx }) => {
+    return await getRepeatAttendees({ userId: ctx.user.id, minBookings: 2 });
+  }),
+  recentBookings: authedProcedure.query(async ({ ctx }) => {
+    return await getRecentBookings({ userId: ctx.user.id, days: 30 });
+  }),
   getUserRelevantTeamRoutingForms: authedProcedure.query(async ({ ctx }) => {
     try {
       const routingForms = await VirtualQueuesInsights.getUserRelevantTeamRoutingForms({
