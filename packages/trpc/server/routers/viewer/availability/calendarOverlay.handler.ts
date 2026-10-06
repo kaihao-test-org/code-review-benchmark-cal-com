@@ -86,8 +86,7 @@ export const calendarOverlayHandler = async ({ ctx, input }: ListOptions) => {
   // get all clanedar services
   const calendarBusyTimes = await getBusyCalendarTimes(
     credentials,
-    dateFrom,
-    dateTo,
+    { start: dateFrom, end: dateTo },
     composedSelectedCalendars
   );
 
