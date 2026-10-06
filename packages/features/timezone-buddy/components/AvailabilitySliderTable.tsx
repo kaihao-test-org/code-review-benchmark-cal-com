@@ -21,6 +21,7 @@ import { Button } from "@calcom/ui/components/button";
 import { ButtonGroup } from "@calcom/ui/components/buttonGroup";
 
 import { UpgradeTip } from "../../tips/UpgradeTip";
+import { getTimezoneDisplay } from "../lib/getTimezoneDisplay";
 import { createTimezoneBuddyStore, TBContext } from "../store";
 import { AvailabilityEditSheet } from "./AvailabilityEditSheet";
 import { CellHighlightContainer } from "./CellHighlightContainer";
@@ -144,19 +145,12 @@ function AvailabilitySliderTableContent(props: { isOrg: boolean }) {
         size: 160,
         cell: ({ row }) => {
           const { timeZone } = row.original;
-          const timeRaw = dayjs().tz(timeZone);
-          const time = timeRaw.format("HH:mm");
-          const utcOffsetInMinutes = timeRaw.utcOffset();
-          const hours = Math.abs(Math.floor(utcOffsetInMinutes / 60));
-          const minutes = Math.abs(utcOffsetInMinutes % 60);
-          const offsetFormatted = `${utcOffsetInMinutes < 0 ? "-" : "+"}${hours
-            .toString()
-            .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+          const { time, utcOffset } = getTimezoneDisplay(timeZone);
 
           return (
             <div className="flex flex-col text-center">
               <span className="text-default text-sm font-medium">{time}</span>
-              <span className="text-subtle text-xs leading-none">GMT {offsetFormatted}</span>
+              <span className="text-subtle text-xs leading-none">GMT {utcOffset}</span>
             </div>
           );
         },
