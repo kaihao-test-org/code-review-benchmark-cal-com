@@ -58,10 +58,13 @@ export class ContainmentSearchAlgorithm<T> {
     this.tree = tree;
   }
 
-  findContainingIntervals(targetStart: number, targetEnd: number, targetIndex: number): IntervalNode<T>[] {
+  queryContaining(target: { start: number; end: number; excludeIndex: number }): {
+    intervals: IntervalNode<T>[];
+  } {
+    const { start: targetStart, end: targetEnd, excludeIndex: targetIndex } = target;
     const result: IntervalNode<T>[] = [];
     this.searchContaining(this.tree.getRoot(), targetStart, targetEnd, targetIndex, result);
-    return result;
+    return { intervals: result };
   }
 
   private searchContaining(
