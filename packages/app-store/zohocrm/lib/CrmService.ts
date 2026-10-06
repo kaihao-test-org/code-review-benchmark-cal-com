@@ -222,7 +222,7 @@ export default class ZohoCrmCrmService implements CRM {
               },
             }),
           "zohocrm",
-          credential.userId
+          { userId: credential.userId }
         );
         if (!zohoCrmTokenInfo.data.error) {
           // set expiry date as offset from current time.
