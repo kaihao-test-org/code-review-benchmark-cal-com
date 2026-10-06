@@ -3,7 +3,7 @@ import { describe, expect, it, beforeAll, vi } from "vitest";
 import dayjs from "@calcom/dayjs";
 
 import type { DateRange } from "./date-ranges";
-import getSlots from "./slots";
+import getSlots from "./slotEngine";
 
 let dateRangesNextDay: DateRange[];
 
