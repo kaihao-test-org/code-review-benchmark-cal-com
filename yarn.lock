@@ -3203,6 +3203,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@calcom/gathertown@workspace:packages/app-store/gathertown":
+  version: 0.0.0-use.local
+  resolution: "@calcom/gathertown@workspace:packages/app-store/gathertown"
+  dependencies:
+    "@calcom/lib": "*"
+    "@calcom/types": "*"
+  languageName: unknown
+  linkType: soft
+
 "@calcom/giphy@workspace:packages/app-store/giphy":
   version: 0.0.0-use.local
   resolution: "@calcom/giphy@workspace:packages/app-store/giphy"
