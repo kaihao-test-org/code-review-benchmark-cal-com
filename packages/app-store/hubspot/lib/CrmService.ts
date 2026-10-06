@@ -18,7 +18,7 @@ import type { CredentialPayload } from "@calcom/types/Credential";
 import type { CRM, ContactCreateInput, Contact, CrmEvent } from "@calcom/types/CrmService";
 
 import getAppKeysFromSlug from "../../_utils/getAppKeysFromSlug";
-import refreshOAuthTokens from "../../_utils/oauth/refreshOAuthTokens";
+import refreshIntegrationTokens from "../../_utils/oauth/integrationTokenRefresh";
 import type { HubspotToken } from "../api/callback";
 
 interface CustomPublicObjectInput extends SimplePublicObjectInput {
@@ -138,7 +138,7 @@ export default class HubspotCalendarService implements CRM {
 
     const refreshAccessToken = async (refreshToken: string) => {
       try {
-        const hubspotRefreshToken: HubspotToken = await refreshOAuthTokens(
+        const hubspotRefreshToken: HubspotToken = await refreshIntegrationTokens(
           async () =>
             await this.hubspotClient.oauth.tokensApi.createToken(
               "refresh_token",
@@ -149,7 +149,8 @@ export default class HubspotCalendarService implements CRM {
               refreshToken
             ),
           "hubspot",
-          credential.userId
+          { userId: credential.userId },
+          async (response) => response.json()
         );
         // set expiry date as offset from current time.
         hubspotRefreshToken.expiryDate = Math.round(Date.now() + hubspotRefreshToken.expiresIn * 1000);
