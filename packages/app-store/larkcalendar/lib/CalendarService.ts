@@ -79,7 +79,7 @@ export default class LarkCalendarService implements Calendar {
             }),
           }),
         "lark-calendar",
-        credential.userId
+        { userId: credential.userId }
       );
 
       const data = await handleLarkError<RefreshTokenResp>(resp, this.log);
