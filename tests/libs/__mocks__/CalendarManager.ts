@@ -11,3 +11,8 @@ beforeEach(() => {
 
 const CalendarManagerMock = mockDeep<typeof CalendarManager>();
 export default CalendarManagerMock;
+
+vi.mock("@calcom/lib/calendarBusyReader", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@calcom/lib/calendarBusyReader")>();
+  return { ...actual, readCalendarBusy: CalendarManagerMock.getBusyCalendarTimes };
+});
