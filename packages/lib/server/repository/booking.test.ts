@@ -253,4 +253,110 @@ describe("BookingRepository", () => {
       expect(bookings[0].startTime.toISOString()).toBe(new Date("2025-06-26T00:00:00.000Z").toISOString());
     });
   });
+
+  describe("findAllExistingBookingsForEventTypeBetween", () => {
+    const createExistingBookings = async () => {
+      await Promise.all([
+        prismaMock.booking.create({
+          data: {
+            userId: 1,
+            uid: "booking-owned",
+            status: BookingStatus.ACCEPTED,
+            attendees: {
+              create: {
+                email: "booker@example.com",
+                name: "Booker",
+                timeZone: "UTC",
+              },
+            },
+            startTime: new Date("2025-05-02T10:00:00.000Z"),
+            endTime: new Date("2025-05-02T11:00:00.000Z"),
+            title: "Owned Event",
+          },
+        }),
+        prismaMock.booking.create({
+          data: {
+            userId: 2,
+            uid: "booking-attended",
+            status: BookingStatus.ACCEPTED,
+            attendees: {
+              create: {
+                email: "organizer1@example.com",
+                name: "Organizer 1",
+                timeZone: "UTC",
+              },
+            },
+            startTime: new Date("2025-05-02T12:00:00.000Z"),
+            endTime: new Date("2025-05-02T13:00:00.000Z"),
+            title: "Attended Event",
+          },
+        }),
+        prismaMock.booking.create({
+          data: {
+            userId: 1,
+            uid: "booking-being-rescheduled",
+            status: BookingStatus.ACCEPTED,
+            attendees: {
+              create: {
+                email: "booker@example.com",
+                name: "Booker",
+                timeZone: "UTC",
+              },
+            },
+            startTime: new Date("2025-05-02T14:00:00.000Z"),
+            endTime: new Date("2025-05-02T15:00:00.000Z"),
+            title: "Rescheduled Event",
+          },
+        }),
+        prismaMock.booking.create({
+          data: {
+            userId: 1,
+            uid: "booking-cancelled",
+            status: BookingStatus.CANCELLED,
+            attendees: {
+              create: {
+                email: "booker@example.com",
+                name: "Booker",
+                timeZone: "UTC",
+              },
+            },
+            startTime: new Date("2025-05-02T15:00:00.000Z"),
+            endTime: new Date("2025-05-02T16:00:00.000Z"),
+            title: "Cancelled Event",
+          },
+        }),
+      ]);
+    };
+
+    it("should return accepted bookings the user owns or attends within the range", async () => {
+      await createExistingBookings();
+
+      const bookingRepo = new BookingRepository(prismaMock);
+      const bookings = await bookingRepo.findAllExistingBookingsForEventTypeBetween({
+        startDate: new Date("2025-05-02T00:00:00.000Z"),
+        endDate: new Date("2025-05-03T00:00:00.000Z"),
+        userIdAndEmailMap: new Map([[1, "organizer1@example.com"]]),
+      });
+
+      expect(bookings.map((booking) => booking.uid).sort()).toEqual([
+        "booking-attended",
+        "booking-being-rescheduled",
+        "booking-owned",
+      ]);
+    });
+
+    it("should leave out the booking matching excludedUid", async () => {
+      await createExistingBookings();
+
+      const bookingRepo = new BookingRepository(prismaMock);
+      const bookings = await bookingRepo.findAllExistingBookingsForEventTypeBetween({
+        startDate: new Date("2025-05-02T00:00:00.000Z"),
+        endDate: new Date("2025-05-03T00:00:00.000Z"),
+        userIdAndEmailMap: new Map([[1, "organizer1@example.com"]]),
+        excludedUid: "booking-being-rescheduled",
+      });
+
+      expect(bookings.map((booking) => booking.uid).sort()).toEqual(["booking-attended", "booking-owned"]);
+    });
+  });
 });
