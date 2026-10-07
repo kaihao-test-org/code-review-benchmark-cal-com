@@ -4,8 +4,6 @@ import type { Prisma } from "@prisma/client";
 import dayjs from "@calcom/dayjs";
 import { getBusyCalendarTimes } from "@calcom/lib/CalendarManager";
 import { subtract } from "@calcom/lib/date-ranges";
-import { stringToDayjs } from "@calcom/lib/dayjs";
-import { intervalLimitKeyToUnit } from "@calcom/lib/intervalLimits/intervalLimit";
 import type { IntervalLimit } from "@calcom/lib/intervalLimits/intervalLimitSchema";
 import logger from "@calcom/lib/logger";
 import { getPiiFreeBooking } from "@calcom/lib/piiFreeData";
@@ -18,6 +16,7 @@ import type { EventBusyDetails } from "@calcom/types/Calendar";
 import type { CredentialForCalendarService } from "@calcom/types/Credential";
 
 import { getDefinedBufferTimes } from "../features/eventtypes/lib/getDefinedBufferTimes";
+import { getLimitQueryWindow } from "./intervalLimits/queryWindow/getLimitQueryWindow";
 import { BookingRepository } from "./server/repository/booking";
 
 const _getBusyTimes = async (params: {
@@ -253,31 +252,6 @@ const _getBusyTimes = async (params: {
 
 export const getBusyTimes = withReporting(_getBusyTimes, "getBusyTimes");
 
-export function getStartEndDateforLimitCheck(
-  startDate: string,
-  endDate: string,
-  bookingLimits?: IntervalLimit | null,
-  durationLimits?: IntervalLimit | null
-) {
-  const startTimeAsDayJs = stringToDayjs(startDate);
-  const endTimeAsDayJs = stringToDayjs(endDate);
-
-  let limitDateFrom = stringToDayjs(startDate);
-  let limitDateTo = stringToDayjs(endDate);
-
-  // expand date ranges by absolute minimum required to apply limits
-  // (yearly limits are handled separately for performance)
-  for (const key of ["PER_MONTH", "PER_WEEK", "PER_DAY"] as Exclude<keyof IntervalLimit, "PER_YEAR">[]) {
-    if (bookingLimits?.[key] || durationLimits?.[key]) {
-      const unit = intervalLimitKeyToUnit(key);
-      limitDateFrom = dayjs.min(limitDateFrom, startTimeAsDayJs.startOf(unit));
-      limitDateTo = dayjs.max(limitDateTo, endTimeAsDayJs.endOf(unit));
-    }
-  }
-
-  return { limitDateFrom, limitDateTo };
-}
-
 export async function getBusyTimesForLimitChecks(params: {
   userIds: number[];
   eventTypeId: number;
@@ -297,7 +271,7 @@ export async function getBusyTimesForLimitChecks(params: {
     return busyTimes;
   }
 
-  const { limitDateFrom, limitDateTo } = getStartEndDateforLimitCheck(
+  const { limitDateFrom, limitDateTo } = getLimitQueryWindow(
     startDate,
     endDate,
     bookingLimits,
