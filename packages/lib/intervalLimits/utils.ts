@@ -1,3 +1,4 @@
+import { formatIntervalDateKey } from "./formatIntervalDateKey";
 import type { Dayjs } from "@calcom/dayjs";
 import dayjs from "@calcom/dayjs";
 import type { EventBusyDetails } from "@calcom/types/Calendar";
@@ -19,9 +20,9 @@ export function extractDateParameters(
   timeZone: string
 ) {
   const bookingStart = dayjs(booking.start).tz(timeZone);
-  const bookingDay = bookingStart.format("YYYY-MM-DD");
-  const periodStartDay = periodStart.format("YYYY-MM-DD");
-  const periodEndDay = periodEnd.format("YYYY-MM-DD");
+  const bookingDay = formatIntervalDateKey(bookingStart);
+  const periodStartDay = formatIntervalDateKey(periodStart);
+  const periodEndDay = formatIntervalDateKey(periodEnd);
 
   return {
     bookingStart,
