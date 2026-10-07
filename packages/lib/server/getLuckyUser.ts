@@ -17,7 +17,7 @@ import { BookingStatus, RRTimestampBasis, RRResetInterval } from "@calcom/prisma
 import type { EventBusyDate } from "@calcom/types/Calendar";
 import type { CredentialForCalendarService } from "@calcom/types/Credential";
 
-import { mergeOverlappingRanges } from "../date-ranges";
+import { collectAbsenceIntervals } from "../rangeUnion/collectAbsenceIntervals";
 
 const log = logger.getSubLogger({ prefix: ["getLuckyUser"] });
 const { getAttributesQueryValue } = acrossQueryValueCompatiblity;
@@ -807,27 +807,7 @@ async function fetchAllDataNeededForCalculations<
     },
   });
 
-  const oooEntriesGroupedByUserId = new Map<number, { start: Date; end: Date }[]>();
-
-  oooEntries.forEach((entry) => {
-    if (!oooEntriesGroupedByUserId.has(entry.userId)) {
-      oooEntriesGroupedByUserId.set(entry.userId, []);
-    }
-    oooEntriesGroupedByUserId.get(entry.userId)!.push({ start: entry.start, end: entry.end });
-  });
-
-  const oooData: { userId: number; oooEntries: { start: Date; end: Date }[] }[] = [];
-
-  userFullDayBusyTimes.forEach((fullDayBusyTimes, userId) => {
-    const oooEntriesForUser = oooEntriesGroupedByUserId.get(userId) || [];
-    const combinedEntries = [...oooEntriesForUser, ...fullDayBusyTimes];
-    const oooEntries = mergeOverlappingRanges(combinedEntries);
-
-    oooData.push({
-      userId,
-      oooEntries,
-    });
-  });
+  const oooData = collectAbsenceIntervals(userFullDayBusyTimes, oooEntries);
 
   const endTime = performance.now();
   log.info(`fetchAllDataNeededForCalculations took ${endTime - startTime}ms`);
