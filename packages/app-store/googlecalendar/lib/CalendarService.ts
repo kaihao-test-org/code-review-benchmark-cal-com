@@ -5,7 +5,6 @@ import { RRule } from "rrule";
 import { v4 as uuid } from "uuid";
 
 import { MeetLocationType } from "@calcom/app-store/locations";
-import { CalendarCache } from "@calcom/features/calendar-cache/calendar-cache";
 import type { FreeBusyArgs } from "@calcom/features/calendar-cache/calendar-cache.repository.interface";
 import { getTimeMax, getTimeMin } from "@calcom/features/calendar-cache/lib/datesForCache";
 import { getLocation, getRichDescription } from "@calcom/lib/CalEventParser";
@@ -28,6 +27,7 @@ import type { CredentialForCalendarServiceWithEmail } from "@calcom/types/Creden
 
 import { AxiosLikeResponseToFetchResponse } from "../../_utils/oauth/AxiosLikeResponseToFetchResponse";
 import { CalendarAuth } from "./CalendarAuth";
+import { GoogleFreeBusyCache } from "./GoogleFreeBusyCache";
 
 const log = logger.getSubLogger({ prefix: ["app-store/googlecalendar/lib/CalendarService"] });
 
@@ -57,11 +57,13 @@ export default class GoogleCalendarService implements Calendar {
   private auth: CalendarAuth;
   private log: typeof logger;
   private credential: CredentialForCalendarServiceWithEmail;
+  private freeBusyCache: GoogleFreeBusyCache;
 
   constructor(credential: CredentialForCalendarServiceWithEmail) {
     this.integrationName = "google_calendar";
     this.credential = credential;
     this.auth = new CalendarAuth(credential);
+    this.freeBusyCache = new GoogleFreeBusyCache(credential);
     this.log = log.getSubLogger({ prefix: [`[[lib] ${this.integrationName}`] });
   }
 
@@ -460,18 +462,7 @@ export default class GoogleCalendarService implements Calendar {
     shouldServeCache?: boolean
   ): Promise<calendar_v3.Schema$FreeBusyResponse> {
     if (shouldServeCache === false) return await this.fetchAvailability(args);
-    const calendarCache = await CalendarCache.init(null);
-    const cached = await calendarCache.getCachedAvailability({
-      credentialId: this.credential.id,
-      userId: this.credential.userId,
-      args: {
-        // Expand the start date to the start of the month to increase cache hits
-        timeMin: getTimeMin(args.timeMin),
-        // Expand the end date to the end of the month to increase cache hits
-        timeMax: getTimeMax(args.timeMax),
-        items: args.items,
-      },
-    });
+    const cached = await this.freeBusyCache.read(args);
     if (cached) {
       log.debug("[Cache Hit] Returning cached freebusy result", safeStringify({ cached, args }));
       return cached.value as unknown as calendar_v3.Schema$FreeBusyResponse;
@@ -500,16 +491,19 @@ export default class GoogleCalendarService implements Calendar {
     const freeBusyResult = await this.getFreeBusyResult(args, shouldServeCache);
     if (!freeBusyResult.calendars) return null;
 
-    const result = Object.entries(freeBusyResult.calendars).reduce((c, [id, i]) => {
-      i.busy?.forEach((busyTime) => {
-        c.push({
-          id,
-          start: busyTime.start || "",
-          end: busyTime.end || "",
+    const result = Object.entries(freeBusyResult.calendars).reduce(
+      (c, [id, i]) => {
+        i.busy?.forEach((busyTime) => {
+          c.push({
+            id,
+            start: busyTime.start || "",
+            end: busyTime.end || "",
+          });
         });
-      });
-      return c;
-    }, [] as (EventBusyDate & { id: string })[]);
+        return c;
+      },
+      [] as (EventBusyDate & { id: string })[]
+    );
 
     return result;
   }
@@ -588,23 +582,6 @@ export default class GoogleCalendarService implements Calendar {
   }
 
   /**
-   * Converts FreeBusy response data to EventBusyDate array
-   */
-  private convertFreeBusyToEventBusyDates(
-    freeBusyResult: calendar_v3.Schema$FreeBusyResponse
-  ): EventBusyDate[] {
-    if (!freeBusyResult.calendars) return [];
-
-    return Object.values(freeBusyResult.calendars).flatMap(
-      (calendar) =>
-        calendar.busy?.map((busyTime) => ({
-          start: busyTime.start || "",
-          end: busyTime.end || "",
-        })) || []
-    );
-  }
-
-  /**
    * Attempts to get availability from cache
    */
   private async tryGetAvailabilityFromCache(
@@ -613,17 +590,10 @@ export default class GoogleCalendarService implements Calendar {
     calendarIds: string[]
   ): Promise<EventBusyDate[] | null> {
     try {
-      const calendarCache = await CalendarCache.init(null);
-      const cached = await calendarCache.getCachedAvailability({
-        credentialId: this.credential.id,
-        userId: this.credential.userId,
-        args: {
-          // Expand the start date to the start of the month to increase cache hits
-          timeMin: getTimeMin(timeMin),
-          // Expand the end date to the end of the month to increase cache hits
-          timeMax: getTimeMax(timeMax),
-          items: calendarIds.map((id) => ({ id })),
-        },
+      const cached = await this.freeBusyCache.read({
+        timeMin,
+        timeMax,
+        items: calendarIds.map((id) => ({ id })),
       });
 
       if (cached) {
@@ -632,7 +602,7 @@ export default class GoogleCalendarService implements Calendar {
           safeStringify({ timeMin, timeMax, calendarIds })
         );
         const freeBusyResult = cached.value as unknown as calendar_v3.Schema$FreeBusyResponse;
-        return this.convertFreeBusyToEventBusyDates(freeBusyResult);
+        return GoogleFreeBusyCache.toCalendarBusyTimes(freeBusyResult);
       }
 
       return null;
@@ -801,7 +771,7 @@ export default class GoogleCalendarService implements Calendar {
             primary: cal.primary ?? false,
             readOnly: !(cal.accessRole === "writer" || cal.accessRole === "owner") && true,
             email: cal.id ?? "",
-          } satisfies IntegrationCalendar)
+          }) satisfies IntegrationCalendar
       );
     } catch (error) {
       this.log.error("There was an error getting calendars: ", safeStringify(error));
@@ -978,33 +948,13 @@ export default class GoogleCalendarService implements Calendar {
 
   async setAvailabilityInCache(args: FreeBusyArgs, data: calendar_v3.Schema$FreeBusyResponse): Promise<void> {
     log.debug("setAvailabilityInCache", safeStringify({ args, data }));
-    const calendarCache = await CalendarCache.init(null);
-    await calendarCache.upsertCachedAvailability({
-      credentialId: this.credential.id,
-      userId: this.credential.userId,
-      args,
-      value: JSON.parse(JSON.stringify(data)),
-    });
+    await this.freeBusyCache.write(args, data);
   }
 
   async fetchAvailabilityAndSetCache(selectedCalendars: IntegrationCalendar[]) {
     this.log.debug("fetchAvailabilityAndSetCache", safeStringify({ selectedCalendars }));
-    const selectedCalendarsPerEventType = new Map<
-      SelectedCalendarEventTypeIds[number],
-      IntegrationCalendar[]
-    >();
-
-    // TODO: Should be done outside of CalendarService as it is applicable to all Apps' CalendarServices
-    selectedCalendars.reduce((acc, selectedCalendar) => {
-      const eventTypeId = selectedCalendar.eventTypeId ?? null;
-      const mapValue = selectedCalendarsPerEventType.get(eventTypeId);
-      if (mapValue) {
-        mapValue.push(selectedCalendar);
-      } else {
-        acc.set(eventTypeId, [selectedCalendar]);
-      }
-      return acc;
-    }, selectedCalendarsPerEventType);
+    const selectedCalendarsPerEventType =
+      GoogleFreeBusyCache.groupSelectedCalendarsByEventTypeId(selectedCalendars);
 
     for (const [_eventTypeId, selectedCalendars] of Array.from(selectedCalendarsPerEventType.entries())) {
       const parsedArgs = {
