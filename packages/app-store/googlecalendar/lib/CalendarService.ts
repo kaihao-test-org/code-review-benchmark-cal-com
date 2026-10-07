@@ -980,10 +980,16 @@ export default class GoogleCalendarService implements Calendar {
         })
       );
     }
-    const data = {
-      ...responses[0],
-      calendars: Object.assign({}, ...responses.map((response) => response.calendars ?? {})),
-    };
+    const calendarResponses = responses.reduce<
+      NonNullable<calendar_v3.Schema$FreeBusyResponse["calendars"]>[]
+    >((result, response) => {
+      if (response.calendars) result.push(response.calendars);
+      return result;
+    }, []);
+    const data =
+      calendarResponses.length > 0
+        ? { ...responses[0], calendars: Object.assign({}, ...calendarResponses) }
+        : responses[0];
 
     for (const args of entries) {
       await this.setAvailabilityInCache(args, data);
