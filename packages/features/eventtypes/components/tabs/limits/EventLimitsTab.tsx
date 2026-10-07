@@ -142,7 +142,7 @@ function RangeLimitRadioItem({
       <div>
         <div
           className={classNames(
-            "me-2 ms-0 mt-2 w-full sm:ms-2 sm:mt-0 sm:w-auto",
+            "me-2 ms-0 sm:ms-2 mt-2 w-full sm:mt-0 sm:w-auto",
             customClassNames?.datePickerWraper
           )}>
           <Controller
@@ -429,7 +429,7 @@ export const EventLimitsTab = ({ eventType, customClassNames }: EventLimitsTabPr
                     label: t("event_buffer_default"),
                     value: 0,
                   },
-                  ...getDefinedBufferTimes().map((minutes) => ({
+                  ...getDefinedBufferTimes("descending").map((minutes) => ({
                     label: `${minutes} ${t("minutes")}`,
                     value: minutes,
                   })),
