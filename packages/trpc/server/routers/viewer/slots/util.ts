@@ -728,6 +728,7 @@ export class AvailableSlotsService {
         eventTypeId: eventType.id,
         seatedEvent: Boolean(eventType.seatsPerTimeSlot),
         userIdAndEmailMap,
+        excludedUid: input.rescheduleUid,
       }),
       this.getOOODates(startTimeDate, endTimeDate, allUserIds),
     ]);
