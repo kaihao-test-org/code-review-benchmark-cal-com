@@ -661,75 +661,40 @@ describe("Calendar Cache", () => {
     expect(cachedAvailability).toBeNull();
   });
 
-  test("fetchAvailabilityAndSetCache should fetch and cache availability for selected calendars grouped by eventTypeId", async () => {
+  test("fetchAvailabilityAndSetCache batches selected calendars and keeps cache entries per group", async () => {
     const credentialInDb = await createCredentialForCalendarService();
     const calendarService = new CalendarService(credentialInDb);
-
     const selectedCalendars = [
-      {
-        externalId: "calendar1@test.com",
-        eventTypeId: 1,
-      },
-      {
-        externalId: "calendar2@test.com",
-        eventTypeId: 1,
-      },
-      {
-        externalId: "calendar1@test.com",
-        eventTypeId: 2,
-      },
-      {
-        externalId: "calendar1@test.com",
-        eventTypeId: null,
-      },
-      {
-        externalId: "calendar2@test.com",
-        eventTypeId: null,
-      },
+      { externalId: "calendar1@test.com", eventTypeId: 1 },
+      { externalId: "calendar2@test.com", eventTypeId: 1 },
+      { externalId: "calendar1@test.com", eventTypeId: 2 },
+      { externalId: "calendar1@test.com", eventTypeId: null },
+      { externalId: "calendar2@test.com", eventTypeId: null },
     ];
-
     const mockAvailabilityData = { busy: [] };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn(calendarService, "fetchAvailability").mockResolvedValue(mockAvailabilityData as any);
-    const setAvailabilityInCacheSpy = vi.spyOn(calendarService, "setAvailabilityInCache");
+    const cacheWrite = vi.spyOn(calendarService, "setAvailabilityInCache");
 
     await calendarService.fetchAvailabilityAndSetCache(selectedCalendars);
 
-    // Should make 2 calls - one for each unique eventTypeId
-    expect(calendarService.fetchAvailability).toHaveBeenCalledTimes(3);
-
-    // First call for eventTypeId 1 calendars
-    expect(calendarService.fetchAvailability).toHaveBeenNthCalledWith(1, {
+    expect(calendarService.fetchAvailability).toHaveBeenCalledTimes(1);
+    expect(calendarService.fetchAvailability).toHaveBeenCalledWith({
       timeMin: expect.any(String),
       timeMax: expect.any(String),
       items: [{ id: "calendar1@test.com" }, { id: "calendar2@test.com" }],
     });
-
-    // Second call for eventTypeId 2 calendar
-    expect(calendarService.fetchAvailability).toHaveBeenNthCalledWith(2, {
-      timeMin: expect.any(String),
-      timeMax: expect.any(String),
-      items: [{ id: "calendar1@test.com" }],
-    });
-
-    // Second call for eventTypeId 2 calendar
-    expect(calendarService.fetchAvailability).toHaveBeenNthCalledWith(3, {
-      timeMin: expect.any(String),
-      timeMax: expect.any(String),
-      items: [{ id: "calendar1@test.com" }, { id: "calendar2@test.com" }],
-    });
-
-    // Should cache results for both calls
-    expect(setAvailabilityInCacheSpy).toHaveBeenCalledTimes(3);
-    expect(setAvailabilityInCacheSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        items: expect.any(Array),
-      }),
+    expect(cacheWrite).toHaveBeenCalledTimes(2);
+    expect(cacheWrite).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ items: [{ id: "calendar1@test.com" }, { id: "calendar2@test.com" }] }),
+      mockAvailabilityData
+    );
+    expect(cacheWrite).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ items: [{ id: "calendar1@test.com" }] }),
       mockAvailabilityData
     );
   });
-
   test("A cache set through fetchAvailabilityAndSetCache should be used when doing getAvailability", async () => {
     const credentialInDb = await createCredentialForCalendarService();
     const calendarService = new CalendarService(credentialInDb);
