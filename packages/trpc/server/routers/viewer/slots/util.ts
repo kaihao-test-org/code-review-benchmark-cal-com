@@ -15,7 +15,7 @@ import { buildDateRanges } from "@calcom/lib/date-ranges";
 import { getUTCOffsetByTimezone } from "@calcom/lib/dayjs";
 import { getDefaultEvent } from "@calcom/lib/defaultEvents";
 import { getAggregatedAvailability } from "@calcom/lib/getAggregatedAvailability";
-import { getBusyTimesForLimitChecks, getStartEndDateforLimitCheck } from "@calcom/lib/getBusyTimes";
+import { getBusyTimesForLimitChecks } from "@calcom/lib/getBusyTimes";
 import type {
   CurrentSeats,
   EventType,
@@ -29,6 +29,7 @@ import type { IntervalLimit } from "@calcom/lib/intervalLimits/intervalLimitSche
 import { parseBookingLimit } from "@calcom/lib/intervalLimits/isBookingLimits";
 import { parseDurationLimit } from "@calcom/lib/intervalLimits/isDurationLimits";
 import LimitManager from "@calcom/lib/intervalLimits/limitManager";
+import { getLimitQueryWindow } from "@calcom/lib/intervalLimits/queryWindow/getLimitQueryWindow";
 import { checkBookingLimit } from "@calcom/lib/intervalLimits/server/checkBookingLimits";
 import { isBookingWithinPeriod } from "@calcom/lib/intervalLimits/utils";
 import {
@@ -331,7 +332,7 @@ export class AvailableSlotsService {
       return userBusyTimesMap;
     }
 
-    const { limitDateFrom, limitDateTo } = getStartEndDateforLimitCheck(
+    const { limitDateFrom, limitDateTo } = getLimitQueryWindow(
       dateFrom.toISOString(),
       dateTo.toISOString(),
       bookingLimits || durationLimits
@@ -511,7 +512,7 @@ export class AvailableSlotsService {
     timeZone: string,
     rescheduleUid?: string
   ) {
-    const { limitDateFrom, limitDateTo } = getStartEndDateforLimitCheck(
+    const { limitDateFrom, limitDateTo } = getLimitQueryWindow(
       dateFrom.toISOString(),
       dateTo.toISOString(),
       bookingLimits
