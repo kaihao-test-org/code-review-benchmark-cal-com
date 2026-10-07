@@ -1,6 +1,5 @@
 import type { Dayjs } from "@calcom/dayjs";
 import dayjs from "@calcom/dayjs";
-import { getStartEndDateforLimitCheck } from "@calcom/lib/getBusyTimes";
 import type { EventType } from "@calcom/lib/getUserAvailability";
 import { getPeriodStartDatesBetween } from "@calcom/lib/getUserAvailability";
 import { withReporting } from "@calcom/lib/sentryWrapper";
@@ -13,6 +12,7 @@ import type { EventBusyDetails } from "@calcom/types/Calendar";
 import { descendingLimitKeys, intervalLimitKeyToUnit } from "../intervalLimit";
 import type { IntervalLimit } from "../intervalLimitSchema";
 import LimitManager from "../limitManager";
+import { getLimitQueryWindow } from "../queryWindow/getLimitQueryWindow";
 import { isBookingWithinPeriod } from "../utils";
 import { checkBookingLimit } from "./checkBookingLimits";
 
@@ -228,7 +228,7 @@ const _getBusyTimesFromTeamLimits = async (
   timeZone: string,
   rescheduleUid?: string
 ) => {
-  const { limitDateFrom, limitDateTo } = getStartEndDateforLimitCheck(
+  const { limitDateFrom, limitDateTo } = getLimitQueryWindow(
     dateFrom.toISOString(),
     dateTo.toISOString(),
     bookingLimits
