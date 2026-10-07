@@ -153,7 +153,7 @@ const _getBusyTimes = async (params: {
 
     const exclusions = getCalendarBusyTimeExclusions({
       openSeatsDateRanges,
-      bookings,
+      bookings: bookings.filter((booking) => booking.uid !== rescheduleUid),
       rescheduleUid,
     });
 
