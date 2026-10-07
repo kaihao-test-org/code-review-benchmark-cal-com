@@ -150,6 +150,20 @@ describe("getCalendarBusyTimeExclusions", () => {
       ["2025-01-10T09:00:00.000Z", "2025-01-10T10:00:00.000Z"],
     ]);
   });
+  it("deduplicates identical ranges while preserving the first-seen order", () => {
+    const ranges = [
+      { start: dayjs("2025-01-10T14:00:00Z"), end: dayjs("2025-01-10T15:00:00Z") },
+      { start: dayjs("2025-01-10T14:00:00Z"), end: dayjs("2025-01-10T15:00:00Z") },
+      { start: dayjs("2025-01-10T09:00:00Z"), end: dayjs("2025-01-10T10:00:00Z") },
+    ];
+
+    expect(toIsoRanges(getCalendarBusyTimeExclusions({ openSeatsDateRanges: ranges, bookings: [] }))).toEqual(
+      [
+        ["2025-01-10T14:00:00.000Z", "2025-01-10T15:00:00.000Z"],
+        ["2025-01-10T09:00:00.000Z", "2025-01-10T10:00:00.000Z"],
+      ]
+    );
+  });
 });
 
 describe("subtractCalendarBusyTimes", () => {
