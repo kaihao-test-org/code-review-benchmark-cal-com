@@ -329,6 +329,49 @@ describe("getUrlSearchParamsToForward", () => {
     expect(fromEntriesWithDuplicateKeys(result.entries())).toEqual(expectedParams);
   });
 
+  it("should forward a single routed team member alongside the queued form response id", () => {
+    const searchParams = new URLSearchParams("?email=booker@example.com");
+    const expectedParams = {
+      email: "booker@example.com",
+      "cal.queuedFormResponseId": "queued-123",
+      "cal.routedTeamMemberIds": "42",
+    };
+
+    const result = getUrlSearchParamsToForward({
+      formResponse: {},
+      fields: [],
+      searchParams,
+      teamMembersMatchingAttributeLogic: [42],
+      formResponseId: null,
+      queuedFormResponseId: "queued-123",
+      attributeRoutingConfig: null,
+    });
+    expect(result.toString()).toBe(
+      "email=booker%40example.com&cal.routedTeamMemberIds=42&cal.queuedFormResponseId=queued-123"
+    );
+    expect(fromEntriesWithDuplicateKeys(result.entries())).toEqual(expectedParams);
+  });
+
+  it("should not add cal.routedTeamMemberIds when attribute routing is not applicable", () => {
+    const searchParams = new URLSearchParams("?query1=value1");
+    const expectedParams = {
+      query1: "value1",
+      "cal.routingFormResponseId": "7",
+    };
+
+    const result = getUrlSearchParamsToForward({
+      formResponse: {},
+      fields: [],
+      searchParams,
+      teamMembersMatchingAttributeLogic: null,
+      formResponseId: 7,
+      queuedFormResponseId: null,
+      attributeRoutingConfig: null,
+    });
+    expect(result.toString()).toBe("query1=value1&cal.routingFormResponseId=7");
+    expect(fromEntriesWithDuplicateKeys(result.entries())).toEqual(expectedParams);
+  });
+
   describe("Dry Run", () => {
     it("should add cal.routingFormResponseId=0 when formResponseId is 0", () => {
       const searchParams = new URLSearchParams("?query1=value1&query2=value2");

@@ -8,6 +8,7 @@ import { MeetLocationType } from "@calcom/app-store/locations";
 import { CalendarCache } from "@calcom/features/calendar-cache/calendar-cache";
 import type { FreeBusyArgs } from "@calcom/features/calendar-cache/calendar-cache.repository.interface";
 import { getTimeMax, getTimeMin } from "@calcom/features/calendar-cache/lib/datesForCache";
+import { buildFreeBusyBatch } from "@calcom/features/calendar-cache/lib/freeBusyBatch";
 import { getLocation, getRichDescription } from "@calcom/lib/CalEventParser";
 import { uniqueBy } from "@calcom/lib/array";
 import logger from "@calcom/lib/logger";
@@ -989,35 +990,16 @@ export default class GoogleCalendarService implements Calendar {
 
   async fetchAvailabilityAndSetCache(selectedCalendars: IntegrationCalendar[]) {
     this.log.debug("fetchAvailabilityAndSetCache", safeStringify({ selectedCalendars }));
-    const selectedCalendarsPerEventType = new Map<
-      SelectedCalendarEventTypeIds[number],
-      IntegrationCalendar[]
-    >();
+    const { request, entries } = buildFreeBusyBatch({
+      selectedCalendars,
+      timeMin: getTimeMin(),
+      timeMax: getTimeMax(),
+    });
+    if (!request.items.length) return;
 
-    // TODO: Should be done outside of CalendarService as it is applicable to all Apps' CalendarServices
-    selectedCalendars.reduce((acc, selectedCalendar) => {
-      const eventTypeId = selectedCalendar.eventTypeId ?? null;
-      const mapValue = selectedCalendarsPerEventType.get(eventTypeId);
-      if (mapValue) {
-        mapValue.push(selectedCalendar);
-      } else {
-        acc.set(eventTypeId, [selectedCalendar]);
-      }
-      return acc;
-    }, selectedCalendarsPerEventType);
-
-    for (const [_eventTypeId, selectedCalendars] of Array.from(selectedCalendarsPerEventType.entries())) {
-      const parsedArgs = {
-        /** Expand the start date to the start of the month to increase cache hits */
-        timeMin: getTimeMin(),
-        /** Expand the end date to the end of the month to increase cache hits */
-        timeMax: getTimeMax(),
-        // Dont use eventTypeId in key because it can be used by any eventType
-        // The only reason we are building it per eventType is because there can be different groups of calendars to lookup the availability for
-        items: selectedCalendars.map((sc) => ({ id: sc.externalId })),
-      };
-      const data = await this.fetchAvailability(parsedArgs);
-      await this.setAvailabilityInCache(parsedArgs, data);
+    const data = await this.fetchAvailability(request);
+    for (const args of entries) {
+      await this.setAvailabilityInCache(args, data);
     }
   }
 
