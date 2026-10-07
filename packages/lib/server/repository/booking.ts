@@ -186,19 +186,24 @@ export class BookingRepository {
     startDate,
     endDate,
     userIdAndEmailMap,
+    excludedUid,
   }: {
     startDate: Date;
     endDate: Date;
     eventTypeId?: number | null;
     seatedEvent?: boolean;
     userIdAndEmailMap: Map<number, string>;
+    excludedUid?: string | null;
   }) {
+    const excludedUidFilter = excludedUid ? { uid: { not: excludedUid } } : {};
+
     const sharedQuery = {
       startTime: { lte: endDate },
       endTime: { gte: startDate },
       status: {
         in: [BookingStatus.ACCEPTED],
       },
+      ...excludedUidFilter,
     };
 
     const bookingsSelect = {
@@ -268,6 +273,7 @@ export class BookingRepository {
             status: {
               in: [BookingStatus.PENDING],
             },
+            ...excludedUidFilter,
           },
           select: bookingsSelect,
         })

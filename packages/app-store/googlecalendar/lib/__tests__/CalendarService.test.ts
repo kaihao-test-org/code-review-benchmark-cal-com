@@ -696,38 +696,67 @@ describe("Calendar Cache", () => {
 
     await calendarService.fetchAvailabilityAndSetCache(selectedCalendars);
 
-    // Should make 2 calls - one for each unique eventTypeId
-    expect(calendarService.fetchAvailability).toHaveBeenCalledTimes(3);
-
-    // First call for eventTypeId 1 calendars
-    expect(calendarService.fetchAvailability).toHaveBeenNthCalledWith(1, {
+    expect(calendarService.fetchAvailability).toHaveBeenCalledTimes(1);
+    expect(calendarService.fetchAvailability).toHaveBeenCalledWith({
       timeMin: expect.any(String),
       timeMax: expect.any(String),
       items: [{ id: "calendar1@test.com" }, { id: "calendar2@test.com" }],
     });
 
-    // Second call for eventTypeId 2 calendar
-    expect(calendarService.fetchAvailability).toHaveBeenNthCalledWith(2, {
-      timeMin: expect.any(String),
-      timeMax: expect.any(String),
-      items: [{ id: "calendar1@test.com" }],
+    expect(setAvailabilityInCacheSpy).toHaveBeenCalledTimes(2);
+    expect(setAvailabilityInCacheSpy.mock.calls.map(([args]) => args.items)).toEqual([
+      [{ id: "calendar1@test.com" }, { id: "calendar2@test.com" }],
+      [{ id: "calendar1@test.com" }],
+    ]);
+  });
+
+  test("fetchAvailabilityAndSetCache should not call Google when there are no selected calendars", async () => {
+    const credentialInDb = await createCredentialForCalendarService();
+    const calendarService = new CalendarService(credentialInDb);
+    const fetchAvailabilitySpy = vi.spyOn(calendarService, "fetchAvailability");
+    const setAvailabilityInCacheSpy = vi.spyOn(calendarService, "setAvailabilityInCache");
+
+    await calendarService.fetchAvailabilityAndSetCache([]);
+
+    expect(fetchAvailabilitySpy).not.toHaveBeenCalled();
+    expect(setAvailabilityInCacheSpy).not.toHaveBeenCalled();
+  });
+
+  test("fetchAvailabilityAndSetCache should store one cache entry for event types sharing the same calendars", async () => {
+    const credentialInDb = await createCredentialForCalendarService();
+    const calendarService = new CalendarService(credentialInDb);
+    vi.setSystemTime(new Date("2025-04-10T00:00:00.000Z"));
+    setFullMockOAuthManagerRequest();
+
+    const busyTimes = [{ start: "2025-04-11T09:00:00Z", end: "2025-04-11T10:00:00Z" }];
+    freebusyQueryMock.mockResolvedValueOnce({
+      data: {
+        calendars: {
+          "calendar1@test.com": {
+            busy: busyTimes,
+          },
+        },
+      },
     });
 
-    // Second call for eventTypeId 2 calendar
-    expect(calendarService.fetchAvailability).toHaveBeenNthCalledWith(3, {
-      timeMin: expect.any(String),
-      timeMax: expect.any(String),
-      items: [{ id: "calendar1@test.com" }, { id: "calendar2@test.com" }],
-    });
+    await calendarService.fetchAvailabilityAndSetCache([
+      { externalId: "calendar1@test.com", integration: "google_calendar", eventTypeId: null },
+      { externalId: "calendar1@test.com", integration: "google_calendar", eventTypeId: 3 },
+    ]);
 
-    // Should cache results for both calls
-    expect(setAvailabilityInCacheSpy).toHaveBeenCalledTimes(3);
-    expect(setAvailabilityInCacheSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        items: expect.any(Array),
-      }),
-      mockAvailabilityData
+    expect(freebusyQueryMock).toHaveBeenCalledTimes(1);
+    const caches = await prismock.calendarCache.findMany({ where: { credentialId: credentialInDb.id } });
+    expect(caches).toHaveLength(1);
+    expect(caches[0].key).toBe(
+      '{"timeMin":"2025-04-01T00:00:00.000Z","timeMax":"2025-06-01T00:00:00.000Z","items":[{"id":"calendar1@test.com"}]}'
     );
+    expect(caches[0].value).toEqual({
+      calendars: {
+        "calendar1@test.com": {
+          busy: [{ start: "2025-04-11T09:00:00Z", end: "2025-04-11T10:00:00Z" }],
+        },
+      },
+    });
   });
 
   test("A cache set through fetchAvailabilityAndSetCache should be used when doing getAvailability", async () => {
