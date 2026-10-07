@@ -100,7 +100,13 @@ export function getCalendarBusyTimeExclusions({
     }
   }
 
-  return exclusions;
+  const seen = new Set<string>();
+  return exclusions.filter((range) => {
+    const key = `${range.start.valueOf()}<>${range.end.valueOf()}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 export function subtractCalendarBusyTimes<T extends EventBusyDate>({
