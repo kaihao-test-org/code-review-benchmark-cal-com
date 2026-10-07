@@ -125,4 +125,26 @@ describe("getBusyTimes", () => {
       }),
     ]);
   });
+  it("does not mark the current booking busy when its uid is being rescheduled", async () => {
+    const busyTimes = await getBusyTimes({
+      credentials: [],
+      userId: 1,
+      userEmail: "exampleuser1@example.com",
+      username: "exampleuser1",
+      bypassBusyCalendarTimes: false,
+      selectedCalendars: [],
+      startTime: startOfTomorrow.format(),
+      endTime: startOfTomorrow.endOf("day").format(),
+      rescheduleUid: "xxxx1",
+      currentBookings: mockBookings({}),
+    });
+
+    expect(busyTimes).toEqual([
+      expect.objectContaining({
+        start: dayjs(`${tomorrowDate}`).startOf("day").set("hour", 14).toDate(),
+        end: dayjs(`${tomorrowDate}`).startOf("day").set("hour", 15).toDate(),
+        source: "eventType-1-booking-2",
+      }),
+    ]);
+  });
 });
