@@ -955,22 +955,46 @@ export default class GoogleCalendarService implements Calendar {
     this.log.debug("fetchAvailabilityAndSetCache", safeStringify({ selectedCalendars }));
     const selectedCalendarsPerEventType =
       GoogleFreeBusyCache.groupSelectedCalendarsByEventTypeId(selectedCalendars);
+    const timeMin = getTimeMin();
+    const timeMax = getTimeMax();
+    const entries = uniqueBy(
+      Array.from(selectedCalendarsPerEventType.values()).map((group) => ({
+        signature: JSON.stringify(group.map((calendar) => calendar.externalId)),
+        args: { timeMin, timeMax, items: group.map((calendar) => ({ id: calendar.externalId })) },
+      })),
+      ["signature"]
+    ).map(({ args }) => args);
+    const requestedCalendars = uniqueBy(
+      entries.flatMap((entry) => entry.items),
+      ["id"]
+    );
+    if (requestedCalendars.length === 0) return;
 
-    for (const [_eventTypeId, selectedCalendars] of Array.from(selectedCalendarsPerEventType.entries())) {
-      const parsedArgs = {
-        /** Expand the start date to the start of the month to increase cache hits */
-        timeMin: getTimeMin(),
-        /** Expand the end date to the end of the month to increase cache hits */
-        timeMax: getTimeMax(),
-        // Dont use eventTypeId in key because it can be used by any eventType
-        // The only reason we are building it per eventType is because there can be different groups of calendars to lookup the availability for
-        items: selectedCalendars.map((sc) => ({ id: sc.externalId })),
-      };
-      const data = await this.fetchAvailability(parsedArgs);
-      await this.setAvailabilityInCache(parsedArgs, data);
+    const responses = [];
+    for (let offset = 0; offset < requestedCalendars.length; offset += 50) {
+      responses.push(
+        await this.fetchAvailability({
+          timeMin,
+          timeMax,
+          items: requestedCalendars.slice(offset, offset + 50),
+        })
+      );
+    }
+    const calendarResponses = responses.reduce<
+      NonNullable<calendar_v3.Schema$FreeBusyResponse["calendars"]>[]
+    >((result, response) => {
+      if (response.calendars) result.push(response.calendars);
+      return result;
+    }, []);
+    const data =
+      calendarResponses.length > 0
+        ? { ...responses[0], calendars: Object.assign({}, ...calendarResponses) }
+        : responses[0];
+
+    for (const args of entries) {
+      await this.setAvailabilityInCache(args, data);
     }
   }
-
   async createSelectedCalendar(
     data: Omit<Prisma.SelectedCalendarUncheckedCreateInput, "integration" | "credentialId">
   ) {
