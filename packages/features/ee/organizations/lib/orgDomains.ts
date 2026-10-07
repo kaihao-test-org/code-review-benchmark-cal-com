@@ -1,10 +1,9 @@
-import type { Prisma } from "@prisma/client";
+import { buildSlugWhere } from "./slugWhere";
 import type { IncomingMessage } from "http";
 
 import { IS_PRODUCTION, WEBSITE_URL, SINGLE_ORG_SLUG } from "@calcom/lib/constants";
 import { ALLOWED_HOSTNAMES, RESERVED_SUBDOMAINS, WEBAPP_URL } from "@calcom/lib/constants";
 import logger from "@calcom/lib/logger";
-import slugify from "@calcom/lib/slugify";
 
 const log = logger.getSubLogger({
   prefix: ["orgDomains.ts"],
@@ -158,35 +157,11 @@ export function getOrgFullOrigin(slug: string | null, options: { protocol: boole
  * @deprecated You most probably intend to query for an organization only, use `whereClauseForOrgWithSlugOrRequestedSlug` instead which will only return the organization and not a team accidentally.
  */
 export function getSlugOrRequestedSlug(slug: string) {
-  const slugifiedValue = slugify(slug);
-  return {
-    OR: [
-      { slug: slugifiedValue },
-      {
-        metadata: {
-          path: ["requestedSlug"],
-          equals: slugifiedValue,
-        },
-      },
-    ],
-  } satisfies Prisma.TeamWhereInput;
+  return buildSlugWhere(slug);
 }
 
 export function whereClauseForOrgWithSlugOrRequestedSlug(slug: string) {
-  const slugifiedValue = slugify(slug);
-
-  return {
-    OR: [
-      { slug: slugifiedValue },
-      {
-        metadata: {
-          path: ["requestedSlug"],
-          equals: slug,
-        },
-      },
-    ],
-    isOrganization: true,
-  } satisfies Prisma.TeamWhereInput;
+  return { ...buildSlugWhere(slug, slug), isOrganization: true };
 }
 
 export function userOrgQuery(req: IncomingMessage | undefined, fallback?: string | string[]) {
