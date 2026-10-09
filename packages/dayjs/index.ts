@@ -1,9 +1,11 @@
 /* eslint-disable @calcom/eslint/deprecated-imports */
 import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import duration from "dayjs/plugin/duration";
 import isBetween from "dayjs/plugin/isBetween";
 import isToday from "dayjs/plugin/isToday";
+import isoWeek from "dayjs/plugin/isoWeek";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import minmax from "dayjs/plugin/minMax";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -13,10 +15,12 @@ import utc from "dayjs/plugin/utc";
 
 import BusinessDaysPlugin from "./plugins/business-days-plugin";
 
+dayjs.extend(advancedFormat);
 dayjs.extend(customParseFormat);
 dayjs.extend(BusinessDaysPlugin);
 dayjs.extend(isBetween);
 dayjs.extend(isToday);
+dayjs.extend(isoWeek);
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
 dayjs.extend(timeZone);
