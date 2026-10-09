@@ -288,9 +288,6 @@ function generateFiles() {
         fileToBeImported: "zod.ts",
         importName: "appKeysSchema",
       },
-      // HACK: Key must be appId as this is used by eventType metadata and lookup is by appId
-      // This can be removed once we rename the ids of apps like stripe to that of their app folder name
-      entryObjectKeyGetter: (app) => getAppId(app),
     })
   );
 
@@ -367,6 +364,11 @@ function generateFiles() {
 
 const debouncedGenerateFiles = debounce(generateFiles);
 
+const APP_SOURCE_FILE_EXTENSIONS = [".json", ".ts", ".tsx"];
+
+const isAppSourceFile = (filePath: string) =>
+  APP_SOURCE_FILE_EXTENSIONS.some((extension) => filePath.endsWith(extension));
+
 if (isInWatchMode) {
   chokidar
     .watch(APP_STORE_PATH)
@@ -377,9 +379,18 @@ if (isInWatchMode) {
         debouncedGenerateFiles();
       }
     })
+    .on("add", (filePath) => {
+      if (isAppSourceFile(filePath)) {
+        debouncedGenerateFiles();
+      }
+    })
     .on("change", (filePath) => {
-      if (filePath.endsWith("config.json")) {
-        console.log("Config file changed");
+      if (isAppSourceFile(filePath)) {
+        debouncedGenerateFiles();
+      }
+    })
+    .on("unlink", (filePath) => {
+      if (isAppSourceFile(filePath)) {
         debouncedGenerateFiles();
       }
     })
