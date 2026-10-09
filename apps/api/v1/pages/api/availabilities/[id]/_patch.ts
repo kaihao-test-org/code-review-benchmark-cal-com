@@ -1,5 +1,6 @@
 import type { NextApiRequest } from "next";
 
+import { HttpError } from "@calcom/lib/http-error";
 import { defaultResponder } from "@calcom/lib/server/defaultResponder";
 import prisma from "@calcom/prisma";
 
@@ -76,6 +77,18 @@ export async function patchHandler(req: NextApiRequest) {
   const { query, body } = req;
   const { id } = schemaQueryIdParseInt.parse(query);
   const data = schemaAvailabilityEditBodyParams.parse(body);
+  if (data.days) {
+    const invalidDays = data.days.filter((day) => !Number.isInteger(day) || day < 0 || day > 6);
+    if (invalidDays.length > 0) {
+      throw new HttpError({
+        statusCode: 400,
+        message: `Invalid days: ${invalidDays.join(", ")}. Days must be integers from 0 (Sunday) to 6 (Saturday).`,
+      });
+    }
+    if (new Set(data.days).size !== data.days.length) {
+      throw new HttpError({ statusCode: 400, message: "Days must not contain duplicates." });
+    }
+  }
   const availability = await prisma.availability.update({
     where: { id },
     data,
