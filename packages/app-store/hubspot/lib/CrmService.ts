@@ -217,7 +217,39 @@ export default class HubspotCalendarService implements CRM {
     return await this.hubspotDeleteMeeting(uid);
   }
 
-  async getContacts({ emails }: { emails: string | string[] }): Promise<Contact[]> {
+  private async getOwnerEmails(ownerIds: string[]): Promise<Map<string, string>> {
+    const uniqueOwnerIds = Array.from(new Set(ownerIds));
+
+    const owners = await Promise.all(
+      uniqueOwnerIds.map(async (ownerId) => {
+        try {
+          const response = await this.hubspotClient.apiRequest({
+            method: "GET",
+            path: `/crm/v3/owners/${ownerId}`,
+          });
+          const owner: any = await response.json();
+          return [ownerId, owner?.email ?? null] as const;
+        } catch (error) {
+          this.log.warn("Failed to fetch HubSpot owner", { ownerId, error });
+          return [ownerId, null] as const;
+        }
+      })
+    );
+
+    const ownerEmails = new Map<string, string>();
+    for (const [ownerId, email] of owners) {
+      if (email) ownerEmails.set(ownerId, email);
+    }
+    return ownerEmails;
+  }
+
+  async getContacts({
+    emails,
+    includeOwner,
+  }: {
+    emails: string | string[];
+    includeOwner?: boolean;
+  }): Promise<Contact[]> {
     const auth = await this.auth;
     await auth.getToken();
 
@@ -234,7 +266,7 @@ export default class HubspotCalendarService implements CRM {
         ],
       })),
       sorts: ["hs_object_id"],
-      properties: ["hs_object_id", "email"],
+      properties: ["hs_object_id", "email", "hubspot_owner_id"],
       limit: 10,
       after: 0,
     };
@@ -243,10 +275,20 @@ export default class HubspotCalendarService implements CRM {
       .doSearch(publicObjectSearchRequest)
       .then((apiResponse) => apiResponse.results);
 
+    const ownerEmails = includeOwner
+      ? await this.getOwnerEmails(
+          contacts.flatMap((contact) =>
+            contact.properties.hubspot_owner_id ? [contact.properties.hubspot_owner_id] : []
+          )
+        )
+      : new Map<string, string>();
+
     return contacts.map((contact) => {
+      const ownerId = contact.properties.hubspot_owner_id || undefined;
       return {
         id: contact.id,
         email: contact.properties.email,
+        ...(includeOwner && ownerId ? { ownerId, ownerEmail: ownerEmails.get(ownerId) } : {}),
       };
     });
   }
