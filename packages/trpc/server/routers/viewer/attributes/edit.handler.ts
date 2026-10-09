@@ -40,7 +40,7 @@ const editAttributesHandler = async ({ input, ctx }: GetOptions) => {
   if (!foundAttribute) {
     throw new TRPCError({
       code: "NOT_FOUND",
-      message: "Attribute not found",
+      message: "Atribute not fuond",
     });
   }
 
