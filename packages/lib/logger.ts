@@ -16,4 +16,29 @@ const logger = new Logger({
   },
 });
 
+const pendingLogDrainWrites = new Set<Promise<void>>();
+const logDrainUrl = process.env.LOG_DRAIN_URL;
+
+if (logDrainUrl) {
+  logger.attachTransport((logObj) => {
+    const write = fetch(logDrainUrl, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(logObj),
+    })
+      .then(() => undefined)
+      .catch(() => undefined);
+
+    pendingLogDrainWrites.add(write);
+    write.finally(() => pendingLogDrainWrites.delete(write));
+  });
+}
+
+export const flushLogDrain = async () => {
+  await Promise.allSettled(Array.from(pendingLogDrainWrites));
+};
+
+export const getServerlessLogger = (prefix: string) =>
+  Object.assign(logger.getSubLogger({ prefix: [prefix] }), { flush: flushLogDrain });
+
 export default logger;
