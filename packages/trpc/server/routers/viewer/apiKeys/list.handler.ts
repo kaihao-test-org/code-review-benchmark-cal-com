@@ -9,5 +9,14 @@ type ListOptions = {
 };
 
 export const listHandler = async ({ ctx }: ListOptions) => {
-  return ApiKeyRepository.findApiKeysFromUserId({ userId: ctx.user.id });
+  const apiKeys = await ApiKeyRepository.findApiKeysFromUserId({ userId: ctx.user.id });
+  const now = new Date();
+
+  console.log("apiKeys.list", { userId: ctx.user.id, count: apiKeys.length });
+
+  return apiKeys.map((apiKey) => ({
+    ...apiKey,
+    neverExpires: apiKey.expiresAt === null,
+    isExpired: apiKey.expiresAt !== null && apiKey.expiresAt > now,
+  }));
 };
