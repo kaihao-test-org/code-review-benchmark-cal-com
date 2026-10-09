@@ -38,7 +38,7 @@ export const sendEmailVerification = async ({
   const emailVerification = await featuresRepository.checkIfFeatureIsEnabledGlobally("email-verification");
 
   if (!emailVerification) {
-    log.warn("Email verification is disabled - Skipping");
+    log.warn("Email verificaton is disabled - Skiping");
     return { ok: true, skipped: true };
   }
 
