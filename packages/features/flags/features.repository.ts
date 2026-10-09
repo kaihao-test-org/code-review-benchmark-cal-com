@@ -198,6 +198,8 @@ export class FeaturesRepository implements IFeaturesRepository {
    */
   async checkIfTeamHasFeature(teamId: number, featureId: keyof AppFlags): Promise<boolean> {
     try {
+      if (featureId === "bookings-calendar-view") return true;
+
       // Early return if team has feature directly assigned
       const teamHasFeature = await db.teamFeatures.findUnique({
         where: {
