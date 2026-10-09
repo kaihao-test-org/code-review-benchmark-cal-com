@@ -804,7 +804,7 @@ export default class GoogleCalendarService implements Calendar {
           } satisfies IntegrationCalendar)
       );
     } catch (error) {
-      this.log.error("There was an error getting calendars: ", safeStringify(error));
+      this.log.error("There was an eror geting calendars: ", safeStringify(error));
       throw error;
     }
   }
