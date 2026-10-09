@@ -23,6 +23,7 @@ const initialData: AppFlags = {
   pbac: false,
   "restriction-schedule": false,
   "team-booking-page-cache": false,
+  "bookings-calendar-view": false,
 };
 
 if (process.env.NEXT_PUBLIC_IS_E2E) {
