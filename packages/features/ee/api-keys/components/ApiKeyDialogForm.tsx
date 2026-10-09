@@ -22,7 +22,7 @@ export default function ApiKeyDialogForm({
   defaultValues,
   handleClose,
 }: {
-  defaultValues?: Omit<TApiKeys, "userId" | "createdAt" | "lastUsedAt"> & { neverExpires?: boolean };
+  defaultValues?: Omit<TApiKeys, "userId" | "createdAt" | "lastUsedAt">;
   handleClose: () => void;
 }) {
   const { t } = useLocale();
