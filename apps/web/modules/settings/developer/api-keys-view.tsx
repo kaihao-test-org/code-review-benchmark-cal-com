@@ -19,7 +19,7 @@ export const apiKeyModalRef = {
   current: null as null | ((show: boolean) => void),
 };
 export const apiKeyToEditRef = {
-  current: null as null | ((apiKey: (TApiKeys & { neverExpires?: boolean }) | undefined) => void),
+  current: null as null | ((apiKey: TApiKeys | undefined) => void),
 };
 
 export const NewApiKeyButton = () => {
@@ -45,9 +45,7 @@ const ApiKeysView = ({ apiKeys: data }: Props) => {
   const { t } = useLocale();
 
   const [apiKeyModal, setApiKeyModal] = useState(false);
-  const [apiKeyToEdit, setApiKeyToEdit] = useState<(TApiKeys & { neverExpires?: boolean }) | undefined>(
-    undefined
-  );
+  const [apiKeyToEdit, setApiKeyToEdit] = useState<TApiKeys | undefined>(undefined);
 
   useEffect(() => {
     apiKeyModalRef.current = setApiKeyModal;
