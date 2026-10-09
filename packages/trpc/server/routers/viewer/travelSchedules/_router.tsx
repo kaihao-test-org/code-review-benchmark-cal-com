@@ -6,4 +6,8 @@ export const travelSchedulesRouter = router({
     const handler = (await import("./getTravelSchedules.handler")).getTravelSchedulesHandler;
     return handler({ ctx });
   }),
+  getUpcoming: authedProcedure.query(async ({ ctx }) => {
+    const handler = (await import("./getUpcomingTravelSchedules.handler")).getUpcomingTravelSchedulesHandler;
+    return handler({ ctx });
+  }),
 });
