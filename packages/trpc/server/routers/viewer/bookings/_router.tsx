@@ -3,11 +3,13 @@ import publicProcedure from "../../../procedures/publicProcedure";
 import { router } from "../../../trpc";
 import { ZAddGuestsInputSchema } from "./addGuests.schema";
 import { ZConfirmInputSchema } from "./confirm.schema";
+import { ZCountByStatusInputSchema } from "./countByStatus.schema";
 import { ZEditLocationInputSchema } from "./editLocation.schema";
 import { ZFindInputSchema } from "./find.schema";
 import { ZGetInputSchema } from "./get.schema";
 import { ZGetBookingAttendeesInputSchema } from "./getBookingAttendees.schema";
 import { ZInstantBookingInputSchema } from "./getInstantBookingLocation.schema";
+import { ZGetStatusTabInputSchema } from "./getStatusTab.schema";
 import { ZRequestRescheduleInputSchema } from "./requestReschedule.schema";
 import { bookingsProcedure } from "./util";
 
@@ -20,6 +22,8 @@ type BookingsRouterHandlerCache = {
   getBookingAttendees?: typeof import("./getBookingAttendees.handler").getBookingAttendeesHandler;
   find?: typeof import("./find.handler").getHandler;
   getInstantBookingLocation?: typeof import("./getInstantBookingLocation.handler").getHandler;
+  countByStatus?: typeof import("./countByStatus.handler").countByStatusHandler;
+  getStatusTab?: typeof import("./getStatusTab.handler").getStatusTabHandler;
 };
 
 export const bookingsRouter = router({
@@ -98,4 +102,22 @@ export const bookingsRouter = router({
         input,
       });
     }),
+
+  countByStatus: authedProcedure.input(ZCountByStatusInputSchema).query(async ({ input, ctx }) => {
+    const { countByStatusHandler } = await import("./countByStatus.handler");
+
+    return countByStatusHandler({
+      ctx,
+      input,
+    });
+  }),
+
+  getStatusTab: authedProcedure.input(ZGetStatusTabInputSchema).query(async ({ input, ctx }) => {
+    const { getStatusTabHandler } = await import("./getStatusTab.handler");
+
+    return getStatusTabHandler({
+      ctx,
+      input,
+    });
+  }),
 });
