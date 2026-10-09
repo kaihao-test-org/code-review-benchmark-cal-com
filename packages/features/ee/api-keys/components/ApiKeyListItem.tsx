@@ -29,8 +29,7 @@ const ApiKeyListItem = ({
   const { t } = useLocale();
   const utils = trpc.useUtils();
 
-  const isExpired = apiKey?.expiresAt ? apiKey.expiresAt < new Date() : null;
-  const neverExpires = apiKey?.expiresAt === null;
+  const { isExpired, neverExpires } = apiKey;
 
   const deleteApiKey = trpc.viewer.apiKeys.delete.useMutation({
     async onSuccess() {
