@@ -4,6 +4,7 @@ import { ZDeleteInputSchema } from "./delete.schema";
 import { ZEditInputSchema } from "./edit.schema";
 import { ZGetInputSchema } from "./get.schema";
 import { ZListInputSchema } from "./list.schema";
+import { ZListScheduledTriggersInputSchema } from "./listScheduledTriggers.schema";
 import { ZTestTriggerInputSchema } from "./testTrigger.schema";
 import { webhookProcedure } from "./util";
 
@@ -15,6 +16,7 @@ type WebhookRouterHandlerCache = {
   delete?: typeof import("./delete.handler").deleteHandler;
   testTrigger?: typeof import("./testTrigger.handler").testTriggerHandler;
   getByViewer?: typeof import("./getByViewer.handler").getByViewerHandler;
+  listScheduledTriggers?: typeof import("./listScheduledTriggers.handler").listScheduledTriggersHandler;
 };
 
 const UNSTABLE_HANDLER_CACHE: WebhookRouterHandlerCache = {};
@@ -134,4 +136,23 @@ export const webhookRouter = router({
       ctx,
     });
   }),
+
+  listScheduledTriggers: webhookProcedure
+    .input(ZListScheduledTriggersInputSchema)
+    .query(async ({ ctx, input }) => {
+      if (!UNSTABLE_HANDLER_CACHE.listScheduledTriggers) {
+        UNSTABLE_HANDLER_CACHE.listScheduledTriggers = await import("./listScheduledTriggers.handler").then(
+          (mod) => mod.listScheduledTriggersHandler
+        );
+      }
+
+      if (!UNSTABLE_HANDLER_CACHE.listScheduledTriggers) {
+        throw new Error("Failed to load handler");
+      }
+
+      return UNSTABLE_HANDLER_CACHE.listScheduledTriggers({
+        ctx,
+        input,
+      });
+    }),
 });
