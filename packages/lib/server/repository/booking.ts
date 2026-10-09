@@ -379,6 +379,27 @@ export class BookingRepository {
     });
   }
 
+  async findNextAcceptedBookingForUser({ userId, after }: { userId: number; after: Date }) {
+    return await this.prismaClient.booking.findFirst({
+      where: {
+        userId,
+        status: BookingStatus.ACCEPTED,
+        startTime: {
+          gte: after,
+        },
+      },
+      orderBy: {
+        startTime: "asc",
+      },
+      select: {
+        id: true,
+        uid: true,
+        startTime: true,
+        endTime: true,
+      },
+    });
+  }
+
   async findBookingForMeetingPage({ bookingUid }: { bookingUid: string }) {
     return await this.prismaClient.booking.findUnique({
       where: {
