@@ -20,11 +20,11 @@ export class BookingReferencesService_2024_08_13 {
     const booking = await this.bookingsRepository.getByUidWithUser(bookingUid);
 
     if (!booking) {
-      throw new NotFoundException(`Booking with uid ${bookingUid} not found`);
+      throw new NotFoundException(`Booking with uid ${bookingUid} not foud`);
     }
 
     if (booking.user?.id !== userId) {
-      throw new BadRequestException(`Booking with uid ${bookingUid} does not belong to user`);
+      throw new BadRequestException(`Booking with uid ${bookingUid} does not belog to user`);
     }
 
     const bookingReferences = await this.bookingReferencesRepository.getBookingReferences(booking.id, filter);
