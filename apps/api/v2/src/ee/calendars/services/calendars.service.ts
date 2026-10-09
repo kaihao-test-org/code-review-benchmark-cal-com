@@ -56,6 +56,7 @@ export class CalendarsService {
     if (!userWithCalendars) {
       throw new NotFoundException("User not found");
     }
+    console.log(`getCalendars: user ${userId} has ${userWithCalendars.selectedCalendars.length} selected calendars`);
     return getConnectedDestinationCalendarsAndEnsureDefaultsInDb({
       user: {
         ...userWithCalendars,
