@@ -32,6 +32,7 @@ export const apiHandlers = {
   fathom: import("./fathom/api"),
   feishucalendar: import("./feishucalendar/api"),
   ga4: import("./ga4/api"),
+  gathertown: import("./gathertown/api"),
   giphy: import("./giphy/api"),
   googlecalendar: import("./googlecalendar/api"),
   googlevideo: import("./googlevideo/api"),
