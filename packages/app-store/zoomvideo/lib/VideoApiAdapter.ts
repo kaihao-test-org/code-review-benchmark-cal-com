@@ -72,6 +72,10 @@ export const zoomUserSettingsSchema = z.object({
   schedule_meeting: z
     .object({
       default_password_for_scheduled_meetings: z.string().nullish(),
+      host_video: z.boolean().nullish(),
+      participants_video: z.boolean().nullish(),
+      audio_type: z.string().nullish(),
+      join_before_host: z.boolean().nullish(),
     })
     .nullish(),
   in_meeting: z
@@ -83,7 +87,8 @@ export const zoomUserSettingsSchema = z.object({
 
 // https://developers.zoom.us/docs/api/rest/reference/user/methods/#operation/userSettings
 // append comma separated settings here, to retrieve only these specific settings
-const settingsApiFilterResp = "default_password_for_scheduled_meetings,auto_recording,waiting_room";
+const settingsApiFilterResp =
+  "default_password_for_scheduled_meetings,auto_recording,waiting_room,host_video,participants_video,audio_type,join_before_host";
 
 type ZoomRecurrence = {
   end_date_time?: string;
@@ -175,6 +180,13 @@ const ZoomVideoApiAdapter = (credential: CredentialPayload): VideoApiAdapter => 
     const userSettings = await getUserSettings();
     const recurrence = getRecurrence(event);
     const waitingRoomEnabled = userSettings?.in_meeting?.waiting_room ?? false;
+    const sm = userSettings?.schedule_meeting;
+    const [hv, pv, at, jbh] = [
+      sm?.host_video ?? true,
+      sm?.participants_video ?? true,
+      sm?.audio_type ?? "both",
+      sm?.join_before_host ?? true,
+    ];
     // Documentation at: https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/meetingcreate
     return {
       topic: event.title,
@@ -183,19 +195,19 @@ const ZoomVideoApiAdapter = (credential: CredentialPayload): VideoApiAdapter => 
       duration: (new Date(event.endTime).getTime() - new Date(event.startTime).getTime()) / 60000,
       //schedule_for: "string",   TODO: Used when scheduling the meeting for someone else (needed?)
       timezone: event.organizer.timeZone,
-      password: userSettings?.schedule_meeting?.default_password_for_scheduled_meetings ?? undefined,
+      password: sm?.default_password_for_scheduled_meetings ?? undefined,
       agenda: truncateAgenda(event.description),
       settings: {
-        host_video: true,
-        participant_video: true,
+        host_video: hv,
+        participant_video: pv,
         cn_meeting: false, // TODO: true if host meeting in China
         in_meeting: false, // TODO: true if host meeting in India
-        join_before_host: !waitingRoomEnabled,
+        join_before_host: jbh && !waitingRoomEnabled,
         mute_upon_entry: false,
         watermark: false,
         use_pmi: false,
         approval_type: 2,
-        audio: "both",
+        audio: at,
         auto_recording: userSettings?.recording?.auto_recording || "none",
         enforce_login: false,
         registrants_email_notification: true,
