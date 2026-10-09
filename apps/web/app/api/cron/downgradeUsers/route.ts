@@ -1,10 +1,13 @@
 import { defaultResponderForAppDir } from "app/api/defaultResponderForAppDir";
+import { log as axiomLog } from "next-axiom";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { TeamBilling } from "@calcom/ee/billing/teams";
 import prisma from "@calcom/prisma";
+
+const logger = axiomLog.with({ cron: "downgradeUsers" });
 
 const querySchema = z.object({
   page: z.coerce.number().min(0).optional().default(0),
@@ -21,6 +24,7 @@ async function postHandler(request: NextRequest) {
   const pageSize = 90; // Adjust this value based on the total number of teams and the available processing time
 
   let { page: pageNumber } = querySchema.parse(Object.fromEntries(request.nextUrl.searchParams));
+  let processedTeams = 0;
 
   while (true) {
     const teams = await prisma.team.findMany({
@@ -46,9 +50,13 @@ async function postHandler(request: NextRequest) {
     const teamsBilling = TeamBilling.initMany(teams);
     const teamBillingPromises = teamsBilling.map((teamBilling) => teamBilling.updateQuantity());
     await Promise.allSettled(teamBillingPromises);
+    processedTeams += teams.length;
 
     pageNumber++;
   }
+
+  logger.info("Updated team billing quantities", { processedTeams });
+  await logger.flush();
 
   return NextResponse.json({ ok: true });
 }
