@@ -6,7 +6,7 @@ import type { PrismaClient } from "@calcom/prisma";
 import { bookingMinimalSelect } from "@calcom/prisma";
 import type { Booking } from "@calcom/prisma/client";
 import { RRTimestampBasis } from "@calcom/prisma/enums";
-import { BookingStatus } from "@calcom/prisma/enums";
+import { BookingStatus, SchedulingType } from "@calcom/prisma/enums";
 
 import { UserRepository } from "./user";
 
@@ -457,6 +457,36 @@ export class BookingRepository {
         },
       },
     });
+  }
+
+  async countUpcomingUnconfirmedBookingsOfUser({ userId }: { userId: number }) {
+    const now = new Date();
+
+    const pendingBookingsCount = await this.prismaClient.booking.count({
+      where: {
+        status: BookingStatus.PENDING,
+        userId,
+        endTime: { gt: now },
+      },
+    });
+
+    const recurringBookingGroups = await this.prismaClient.booking.groupBy({
+      by: ["recurringEventId"],
+      _count: {
+        recurringEventId: true,
+      },
+      where: {
+        recurringEventId: { not: { equals: null } },
+        status: { equals: BookingStatus.PENDING },
+        userId,
+        endTime: { gt: now },
+      },
+    });
+
+    return recurringBookingGroups.reduce(
+      (count, group) => count - (group._count.recurringEventId - 1),
+      pendingBookingsCount
+    );
   }
 
   async findBookingByUidAndUserId({ bookingUid, userId }: { bookingUid: string; userId: number }) {
