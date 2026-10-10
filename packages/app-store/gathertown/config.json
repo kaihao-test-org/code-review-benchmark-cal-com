@@ -1,0 +1,24 @@
+{
+  "/*": "Don't modify slug - If required, do it using cli edit command",
+  "name": "Gather Town",
+  "slug": "gathertown",
+  "type": "gathertown_video",
+  "logo": "icon.svg",
+  "url": "https://cal.com/",
+  "variant": "conferencing",
+  "categories": ["conferencing"],
+  "publisher": "Cal.com, Inc.",
+  "email": "help@cal.com",
+  "description": "Gather is a virtual office where remote teams meet, collaborate and catch up in a shared space.",
+  "__createdUsingCli": true,
+  "appData": {
+    "location": {
+      "type": "integrations:gathertown_video",
+      "label": "Gather Town",
+      "linkType": "static",
+      "organizerInputPlaceholder": "https://app.gather.town/app/abc123/my-office",
+      "urlRegExp": "^http(s)?:\\/\\/app\\.gather\\.town\\/app\\/[a-zA-Z0-9]+\\/[\\w-]+"
+    }
+  },
+  "isOAuth": false
+}
