@@ -40,6 +40,7 @@ export class BookingReferencesService_2024_08_13 {
     }
 
     const bookingReferences = await this.bookingReferencesRepository.getBookingReferences(booking.id, filter);
+    console.log(`getOrgBookingReferences: booking ${bookingUid} has ${bookingReferences.length} references`);
 
     return this.outputBookingReferencesService.getOutputBookingReferences(bookingReferences);
   }

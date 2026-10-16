@@ -51,6 +51,7 @@ export const sendEmailVerification = async ({
     log.warn("Skipping Email verification");
     return { ok: true, skipped: true };
   }
+  console.log("sendEmailVerification: sending verification for language", language ?? "en");
 
   await checkRateLimitAndThrowError({
     rateLimitingType: "core",
