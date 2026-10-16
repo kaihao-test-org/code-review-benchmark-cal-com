@@ -6,6 +6,7 @@ import { ZConfirmInputSchema } from "./confirm.schema";
 import { ZEditLocationInputSchema } from "./editLocation.schema";
 import { ZFindInputSchema } from "./find.schema";
 import { ZGetInputSchema } from "./get.schema";
+import { ZGetAttendeeEmailsInputSchema } from "./getAttendeeEmails.schema";
 import { ZGetBookingAttendeesInputSchema } from "./getBookingAttendees.schema";
 import { ZInstantBookingInputSchema } from "./getInstantBookingLocation.schema";
 import { ZRequestRescheduleInputSchema } from "./requestReschedule.schema";
@@ -18,6 +19,7 @@ type BookingsRouterHandlerCache = {
   addGuests?: typeof import("./addGuests.handler").addGuestsHandler;
   confirm?: typeof import("./confirm.handler").confirmHandler;
   getBookingAttendees?: typeof import("./getBookingAttendees.handler").getBookingAttendeesHandler;
+  getAttendeeEmails?: typeof import("./getAttendeeEmails.handler").getAttendeeEmailsHandler;
   find?: typeof import("./find.handler").getHandler;
   getInstantBookingLocation?: typeof import("./getInstantBookingLocation.handler").getHandler;
 };
@@ -78,6 +80,15 @@ export const bookingsRouter = router({
         input,
       });
     }),
+
+  getAttendeeEmails: authedProcedure.input(ZGetAttendeeEmailsInputSchema).query(async ({ input, ctx }) => {
+    const { getAttendeeEmailsHandler } = await import("./getAttendeeEmails.handler");
+
+    return getAttendeeEmailsHandler({
+      ctx,
+      input,
+    });
+  }),
 
   find: publicProcedure.input(ZFindInputSchema).query(async ({ input, ctx }) => {
     const { getHandler } = await import("./find.handler");
