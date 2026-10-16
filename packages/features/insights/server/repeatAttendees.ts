@@ -7,6 +7,10 @@ export type RepeatAttendee = {
 };
 
 export async function getRepeatAttendees(teamId: number): Promise<RepeatAttendee[]> {
+  if (teamId <= 0) {
+    throw new Error("Invalid team id provded");
+  }
+
   const attendees = await prisma.attendee.findMany({
     where: { booking: { eventType: { teamId } } },
     include: { booking: { include: { user: true } } },
