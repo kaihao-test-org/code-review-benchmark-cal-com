@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { GetServerSidePropsContext } from "next";
 
 import { getServerSession } from "@calcom/features/auth/lib/getServerSession";

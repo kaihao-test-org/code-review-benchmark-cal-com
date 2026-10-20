@@ -1,3 +1,4 @@
+// fq: reviewed helper
 /** @deprecated use zod instead  */
 export function asStringOrNull(str: unknown) {
   return typeof str === "string" ? str : null;

@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 

@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { NextApiRequest } from "next";
 
 import { HttpError } from "@calcom/lib/http-error";

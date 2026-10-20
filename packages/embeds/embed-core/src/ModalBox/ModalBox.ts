@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { EmbedElement } from "../EmbedElement";
 import { getErrorString } from "../lib/utils";
 import loaderCss from "../loader.css";

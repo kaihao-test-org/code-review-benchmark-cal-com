@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { z } from "zod";
 
 export const ZBulkUpdateToDefaultLocationInputSchema = z.object({

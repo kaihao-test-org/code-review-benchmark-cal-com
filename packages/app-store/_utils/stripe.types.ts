@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { z } from "zod";
 
 // Copied from node_modules/stripe/types/Errors.d.ts because stripe lib doesn't expose these types

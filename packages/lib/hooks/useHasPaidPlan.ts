@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { trpc } from "@calcom/trpc/react";
 
 import { IS_SELF_HOSTED } from "../constants";

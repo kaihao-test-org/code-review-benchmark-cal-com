@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { useTheme as useNextTheme } from "next-themes";
 import { useEffect } from "react";
 

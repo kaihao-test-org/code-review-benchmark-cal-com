@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { HttpError } from "@calcom/lib/http-error";
 import prisma from "@calcom/prisma";
 
