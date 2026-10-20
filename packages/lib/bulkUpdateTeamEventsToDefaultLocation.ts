@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { LocationObject } from "@calcom/app-store/locations";
 import { getAppFromSlug } from "@calcom/app-store/utils";
 import type { PrismaClient } from "@calcom/prisma";

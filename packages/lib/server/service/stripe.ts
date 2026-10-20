@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import stripe from "@calcom/features/ee/payments/server/stripe";
 import {
   ZStripeCheckoutSessionInputSchema,

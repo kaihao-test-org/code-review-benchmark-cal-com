@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { HttpError } from "./http-error";
 
 async function http<T>(path: string, config: RequestInit): Promise<T> {

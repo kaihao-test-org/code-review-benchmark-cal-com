@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { WebhookTriggerEvents } from "@calcom/prisma/enums";
 
 // this is exported as we can't use `WebhookTriggerEvents` in the frontend straight-off

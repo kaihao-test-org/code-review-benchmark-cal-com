@@ -1,3 +1,4 @@
+// fq: reviewed helper
 const supportedWebhookIntegrationList = ["https://discord.com/api/webhooks/"];
 
 type WebhookIntegrationProps = {

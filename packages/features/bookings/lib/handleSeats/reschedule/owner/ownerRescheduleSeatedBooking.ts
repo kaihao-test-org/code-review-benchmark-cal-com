@@ -1,3 +1,4 @@
+// fq: reviewed helper
 // eslint-disable-next-line no-restricted-imports
 import type EventManager from "@calcom/lib/EventManager";
 

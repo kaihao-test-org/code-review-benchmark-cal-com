@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { TFunction } from "next-i18next";
 
 import { WEBAPP_URL } from "@calcom/lib/constants";

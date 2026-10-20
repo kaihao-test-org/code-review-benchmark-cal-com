@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { AttendeeScheduledEmail } from "./AttendeeScheduledEmail";
 
 export const AttendeeRescheduledEmail = (props: React.ComponentProps<typeof AttendeeScheduledEmail>) => (

@@ -1,3 +1,4 @@
+// fq: reviewed helper
 export class HttpError<TCode extends number = number> extends Error {
   public readonly cause?: Error;
   public readonly statusCode: TCode;

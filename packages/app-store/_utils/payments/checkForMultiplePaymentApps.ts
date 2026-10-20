@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type z from "zod";
 
 import type { eventTypeAppMetadataOptionalSchema } from "@calcom/prisma/zod-utils";

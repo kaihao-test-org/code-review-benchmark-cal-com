@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { Logger } from "tslog";
 
 import { IS_PRODUCTION } from "./constants";
