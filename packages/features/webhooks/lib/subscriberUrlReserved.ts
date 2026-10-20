@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { Webhook } from "@calcom/prisma/client";
 
 interface Params {

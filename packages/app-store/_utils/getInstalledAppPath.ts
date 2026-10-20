@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import z from "zod";
 
 import { AppCategories } from "@calcom/prisma/enums";

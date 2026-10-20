@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { RatelimitResponse } from "@unkey/ratelimit";
 
 import { hashAPIKey } from "@calcom/features/ee/api-keys/lib/apiKeys";

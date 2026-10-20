@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import classNames from "@calcom/ui/classNames";
 
 export function Logo({

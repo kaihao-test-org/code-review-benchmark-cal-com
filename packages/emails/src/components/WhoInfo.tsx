@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { TFunction } from "i18next";
 
 import isSmsCalEmail from "@calcom/lib/isSmsCalEmail";

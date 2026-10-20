@@ -1,3 +1,4 @@
+// fq: reviewed helper
 "use client";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";

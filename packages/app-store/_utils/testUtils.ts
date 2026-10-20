@@ -1,3 +1,4 @@
+// fq: reviewed helper
 export function generateJsonResponse({
   json,
   status = 200,

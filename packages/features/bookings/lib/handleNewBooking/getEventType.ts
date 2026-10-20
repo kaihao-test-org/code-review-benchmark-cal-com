@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { getDefaultEvent } from "@calcom/lib/defaultEvents";
 import { withReporting } from "@calcom/lib/sentryWrapper";
 

@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { EventPayloadType, EventTypeInfo } from "@calcom/features/webhooks/lib/sendPayload";
 import type { CalendarEvent } from "@calcom/types/Calendar";
 

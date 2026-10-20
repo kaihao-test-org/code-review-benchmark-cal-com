@@ -1,3 +1,4 @@
+// fq: reviewed helper
 // We can't keep it too high because that might cause stale content to be shown
 // Configurable via options.slotsStaleTimeMs. We could keep it at a lower end as the impact would be refetch of availability only.
 export const EMBED_MODAL_IFRAME_SLOT_STALE_TIME = 60 * 1000; // 1 minute

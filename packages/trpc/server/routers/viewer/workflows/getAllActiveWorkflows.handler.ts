@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { isTeamMember } from "@calcom/lib/server/queries/teams";
 import { eventTypeMetaDataSchemaWithTypedApps } from "@calcom/prisma/zod-utils";
 import type { TrpcSessionUser } from "@calcom/trpc/server/types";

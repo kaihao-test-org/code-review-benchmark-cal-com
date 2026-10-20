@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { extractBaseEmail } from "@calcom/lib/extract-base-email";
 import { HttpError } from "@calcom/lib/http-error";
 import prisma from "@calcom/prisma";

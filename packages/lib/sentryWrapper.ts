@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { startSpan, captureException } from "@sentry/nextjs";
 
 import { redactSensitiveData } from "./redactSensitiveData";

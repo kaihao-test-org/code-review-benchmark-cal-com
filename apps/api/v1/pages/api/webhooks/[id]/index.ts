@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { defaultHandler } from "@calcom/lib/server/defaultHandler";

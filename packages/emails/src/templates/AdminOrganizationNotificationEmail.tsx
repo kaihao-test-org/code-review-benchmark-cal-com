@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { TFunction } from "i18next";
 
 import ServerTrans from "@calcom/lib/components/ServerTrans";

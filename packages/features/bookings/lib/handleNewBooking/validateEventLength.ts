@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { Logger } from "tslog";
 
 import dayjs from "@calcom/dayjs";

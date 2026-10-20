@@ -1,3 +1,4 @@
+// fq: reviewed helper
 type ValidVariantTypes = string | number | null | boolean | undefined;
 type Variants = Record<string, ValidVariantTypes | ValidVariantTypes[]> & { className: string };
 

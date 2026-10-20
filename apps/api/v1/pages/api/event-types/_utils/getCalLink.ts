@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { WEBSITE_URL } from "@calcom/lib/constants";
 
 export default function getCalLink(eventType: {

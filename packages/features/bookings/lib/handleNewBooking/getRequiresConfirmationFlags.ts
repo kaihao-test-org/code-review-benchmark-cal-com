@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import dayjs from "@calcom/dayjs";
 import { checkIfFreeEmailDomain } from "@calcom/lib/freeEmailDomainCheck/checkIfFreeEmailDomain";
 import { withReporting } from "@calcom/lib/sentryWrapper";

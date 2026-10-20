@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { Payment, Prisma } from "@prisma/client";
 
 import appStore from "@calcom/app-store";

@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { Prisma, Webhook, Booking } from "@prisma/client";
 import { v4 } from "uuid";
 
