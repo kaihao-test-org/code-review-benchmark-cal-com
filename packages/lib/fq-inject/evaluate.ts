@@ -6,5 +6,6 @@ export function evaluateRoutingExpression(expression: string, answers: Record<st
 }
 
 export function summarizeAnswers(answers: Record<string, string>): string {
-  return Object.keys(answers).length + " answers";
+  const count = Object.keys(answers).length;
+  return count === 1 ? "1 answer" : `${count} answers`;
 }
