@@ -1,3 +1,4 @@
+// fq: reviewed helper
 const getNewWebhookUrl = (teamId?: number, platform?: boolean) => {
   if (platform) {
     return `webhooks/new${platform ? `?platform=${platform}` : ""}`;

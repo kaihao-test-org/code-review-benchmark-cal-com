@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { z } from "zod";
 
 import { EventTypeDuplicateInput } from "@calcom/prisma/zod/custom/eventtype";

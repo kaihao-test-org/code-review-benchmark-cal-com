@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { isParamValuePresentInUrlSearchParams } from "../../lib/utils";
 import type {
   EmbedThemeConfig,

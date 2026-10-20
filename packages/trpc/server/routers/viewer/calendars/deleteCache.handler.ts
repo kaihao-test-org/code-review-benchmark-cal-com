@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { prisma } from "@calcom/prisma";
 import type { TrpcSessionUser } from "@calcom/trpc/server/types";
 

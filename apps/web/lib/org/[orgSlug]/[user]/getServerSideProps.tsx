@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { GetServerSidePropsContext } from "next";
 
 import { getSlugOrRequestedSlug } from "@calcom/features/ee/organizations/lib/orgDomains";

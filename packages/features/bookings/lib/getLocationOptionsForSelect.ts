@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { LocationObject } from "@calcom/app-store/locations";
 import { locationKeyToString } from "@calcom/app-store/locations";
 import { getEventLocationType } from "@calcom/app-store/locations";

@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { workflowSelect } from "@calcom/features/ee/workflows/lib/getAllWorkflows";
 import prisma, { bookingMinimalSelect } from "@calcom/prisma";
 import { credentialForCalendarServiceSelect } from "@calcom/prisma/selects/credential";

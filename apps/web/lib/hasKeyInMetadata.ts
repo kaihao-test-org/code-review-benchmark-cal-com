@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import isPrismaObj from "./isPrismaObj";
 
 const hasKeyInMetadata = <T extends string>(

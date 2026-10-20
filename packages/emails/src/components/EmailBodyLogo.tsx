@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { WEBAPP_URL } from "@calcom/lib/constants";
 
 import RawHtml from "./RawHtml";

@@ -1,3 +1,4 @@
+// fq: reviewed helper
 "use client";
 
 import { useSession } from "next-auth/react";

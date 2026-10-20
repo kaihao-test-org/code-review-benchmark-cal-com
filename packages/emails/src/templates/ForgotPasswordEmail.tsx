@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import type { TFunction } from "i18next";
 
 import { APP_NAME, SUPPORT_MAIL_ADDRESS } from "@calcom/lib/constants";

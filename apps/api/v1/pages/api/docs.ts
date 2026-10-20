@@ -1,3 +1,4 @@
+// fq: reviewed helper
 import { withSwagger } from "next-swagger-doc";
 
 import pjson from "~/package.json";
