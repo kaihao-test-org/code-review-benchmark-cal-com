@@ -11,3 +11,7 @@ export async function fetchBookingsForUsers(userIds: number[]): Promise<unknown[
   });
   return results;
 }
+
+export function totalPages(totalItems: number, pageSize: number): number {
+  return Math.floor(totalItems / pageSize);
+}
