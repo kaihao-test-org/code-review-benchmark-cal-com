@@ -1,6 +1,7 @@
 import { router } from "../../../trpc";
 import { ZCreateInputSchema } from "./create.schema";
 import { ZDeleteInputSchema } from "./delete.schema";
+import { ZDeliverTestInputSchema } from "./deliverTest.schema";
 import { ZEditInputSchema } from "./edit.schema";
 import { ZGetInputSchema } from "./get.schema";
 import { ZListInputSchema } from "./list.schema";
@@ -13,6 +14,7 @@ type WebhookRouterHandlerCache = {
   create?: typeof import("./create.handler").createHandler;
   edit?: typeof import("./edit.handler").editHandler;
   delete?: typeof import("./delete.handler").deleteHandler;
+  deliverTest?: typeof import("./deliverTest.handler").deliverTestHandler;
   testTrigger?: typeof import("./testTrigger.handler").testTriggerHandler;
   getByViewer?: typeof import("./getByViewer.handler").getByViewerHandler;
 };
@@ -47,6 +49,15 @@ export const webhookRouter = router({
     }
 
     return UNSTABLE_HANDLER_CACHE.get({
+      ctx,
+      input,
+    });
+  }),
+
+  deliverTest: webhookProcedure.input(ZDeliverTestInputSchema).mutation(async ({ ctx, input }) => {
+    const { deliverTestHandler } = await import("./deliverTest.handler");
+
+    return deliverTestHandler({
       ctx,
       input,
     });
