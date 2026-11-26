@@ -11,6 +11,7 @@ import { ZDeleteInviteInputSchema } from "./deleteInvite.schema";
 import { ZGetSchema } from "./get.schema";
 import { ZGetInternalNotesPresetsInputSchema } from "./getInternalNotesPresets.schema";
 import { ZGetMemberAvailabilityInputSchema } from "./getMemberAvailability.schema";
+import { ZGetMemberSecurityStatusInputSchema } from "./getMemberSecurityStatus.schema";
 import { ZGetMembershipbyUserInputSchema } from "./getMembershipbyUser.schema";
 import { ZGetUserConnectedAppsInputSchema } from "./getUserConnectedApps.schema";
 import { ZHasEditPermissionForUserSchema } from "./hasEditPermissionForUser.schema";
@@ -42,6 +43,12 @@ export const viewerTeamsRouter = router({
     const { default: handler } = await import("./get.handler");
     return handler(opts);
   }),
+  getMemberSecurityStatus: authedProcedure
+    .input(ZGetMemberSecurityStatusInputSchema)
+    .query(async (opts) => {
+      const { default: handler } = await import("./getMemberSecurityStatus.handler");
+      return handler(opts);
+    }),
   // Returns teams I a member of
   list: authedProcedure.input(ZGetListSchema).query(async (opts) => {
     const { default: handler } = await import("./list.handler");
