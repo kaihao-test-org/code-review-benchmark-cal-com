@@ -1,7 +1,9 @@
+import authedProcedure from "../../../procedures/authedProcedure";
 import { router } from "../../../trpc";
 import { ZCreateInputSchema } from "./create.schema";
 import { ZDeleteInputSchema } from "./delete.schema";
 import { ZEditInputSchema } from "./edit.schema";
+import { ZGetDetailsInputSchema } from "./getDetails.schema";
 import { ZGetInputSchema } from "./get.schema";
 import { ZListInputSchema } from "./list.schema";
 import { ZTestTriggerInputSchema } from "./testTrigger.schema";
@@ -10,6 +12,7 @@ import { webhookProcedure } from "./util";
 type WebhookRouterHandlerCache = {
   list?: typeof import("./list.handler").listHandler;
   get?: typeof import("./get.handler").getHandler;
+  getDetails?: typeof import("./getDetails.handler").getDetailsHandler;
   create?: typeof import("./create.handler").createHandler;
   edit?: typeof import("./edit.handler").editHandler;
   delete?: typeof import("./delete.handler").deleteHandler;
@@ -31,6 +34,15 @@ export const webhookRouter = router({
     }
 
     return UNSTABLE_HANDLER_CACHE.list({
+      ctx,
+      input,
+    });
+  }),
+
+  getDetails: authedProcedure.input(ZGetDetailsInputSchema).query(async ({ ctx, input }) => {
+    const { getDetailsHandler } = await import("./getDetails.handler");
+
+    return getDetailsHandler({
       ctx,
       input,
     });
